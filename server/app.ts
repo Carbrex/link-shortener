@@ -20,7 +20,7 @@ import connectDB from "./db/connect";
 // const authenticateUser = require("./middleware/authentication");
 
 // // routers
-// const authRouter = require("./routes/auth");
+import authRouter from "./routes/auth";
 // const jobsRouter = require("./routes/jobs");
 
 // // error handler
@@ -39,10 +39,10 @@ import connectDB from "./db/connect";
 // app.use(xss());
 
 app.get("/", (req, res) => {
-  res.send("jobs api");
+  res.send("Hello");
 });
 // routes
-// app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/auth", authRouter);
 // app.use("/api/v1/jobs", authenticateUser, jobsRouter);
 
 // app.use(notFoundMiddleware);

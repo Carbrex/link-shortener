@@ -3,7 +3,15 @@ import User from "../models/User";
 import jwt from "jsonwebtoken";
 import { UnauthenticatedError } from "../errors";
 import { UserPayload } from "../types/express";
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+
+const convertToObjectId = (id: string) => {
+  try {
+    return new mongoose.Types.ObjectId(id);
+  } catch (error) {
+    throw new UnauthenticatedError("Invalid Token");
+  }
+}
 
 const auth = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -11,19 +19,16 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
     throw new UnauthenticatedError("Authentication Invalid");
   }
   const token = authHeader.split(" ")[1];
-  try {
-    const payload = jwt.verify(
-      token,
-      process.env.JWT_SECRET ?? "secret-string",
-    ) as {userId: string};
-    // const str="random string"
-    // let userPayload: UserPayload = { userId: new mongoose.Types.ObjectId(str) };
-    const userPayload:UserPayload = { userId: new mongoose.Types.ObjectId(payload.userId) };
-    req.user = userPayload;
-    next();
-  } catch (error) {
-    throw new UnauthenticatedError("Authentication Error");
-  }
+  const payload = jwt.verify(
+    token,
+    process.env.JWT_SECRET ?? "secret-string",
+  ) as { userId: string };
+  
+  const userPayload: UserPayload = {
+    userId: convertToObjectId(payload.userId),
+  };
+  req.user = userPayload;
+  next();
 };
 
-module.exports = auth;
+export default auth;

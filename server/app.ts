@@ -21,18 +21,18 @@ import connectDB from "./db/connect";
 
 // // routers
 import authRouter from "./routes/auth";
-// const jobsRouter = require("./routes/jobs");
+import urlRouter from "./routes/url";
 
 // // error handler
-// const notFoundMiddleware = require("./middleware/not-found");
-// const errorHandlerMiddleware = require("./middleware/error-handler");
+import notFoundMiddleware from "./middleware/not-found";
+import errorHandlerMiddleware from "./middleware/error-handler";
 
 // app.set("trust proxy", 1);
 // // app.use(rateLimiter({
 // //   windowMs: 15*60*1000,//15 minutes
 // //   max: 100
 // // }));
-// app.use(express.json());
+app.use(express.json());
 // extra packages
 // app.use(helmet());
 // app.use(cors());
@@ -41,12 +41,13 @@ import authRouter from "./routes/auth";
 app.get("/", (req, res) => {
   res.send("Hello");
 });
+
 // routes
 app.use("/api/v1/auth", authRouter);
-// app.use("/api/v1/jobs", authenticateUser, jobsRouter);
+app.use("/api/v1/url", urlRouter);
 
-// app.use(notFoundMiddleware);
-// app.use(errorHandlerMiddleware);
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 5000;
 

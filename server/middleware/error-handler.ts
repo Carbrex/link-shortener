@@ -1,11 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import { CustomAPIError } from "../errors";
 import mongoose from "mongoose";
+import { MongoServerError } from "mongodb";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
+import sendMail from "../utils/sendMail";
 
 const errorHandlerMiddleware = (
-  err: Error | CustomAPIError | mongoose.Error,
+  err:
+    | Error
+    | CustomAPIError
+    | jwt.JsonWebTokenError
+    | mongoose.Error
+    | MongoServerError
+    | SyntaxError,
   req: Request,
   res: Response,
   next: NextFunction,
@@ -15,68 +23,88 @@ const errorHandlerMiddleware = (
   // Custom Error
   if (err instanceof CustomAPIError) {
     // console.log(err)
-    return res
-      .status(err.statusCode)
-      .json({ success: false, msg: err.message });
+    return res.status(err.statusCode).json({ error: true, msg: err.message });
   }
 
   //JWT error
   if (err instanceof jwt.JsonWebTokenError) {
     if (err instanceof jwt.TokenExpiredError) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
-        success: false,
+        error: true,
         msg: "Session Expired. Please login again.",
       });
     }
     return res
       .status(StatusCodes.UNAUTHORIZED)
-      .json({ success: false, msg: "Not authorized" });
+      .json({ error: true, msg: "Unauthorized" });
   }
 
   if (err instanceof mongoose.Error.ValidationError) {
     // Invalid data eg missing fields
-    return res.status(StatusCodes.BAD_REQUEST).json({ msg: err.message });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: true, msg: err.message });
   }
 
   if (err instanceof mongoose.Error.CastError) {
     // Failed to cast data eg invalid id
     return res
       .status(StatusCodes.NOT_FOUND)
-      .json({ msg: "Resource not found" });
+      .json({ error: true, msg: "Resource not found" });
   }
 
   if (err instanceof mongoose.Error) {
     console.log("mongoose error");
   }
-  console.log(err);
+  if (err instanceof MongoServerError) {
+    if (err.code === 11000) {
+      const key = Object.keys(err.keyValue)[0];
+      const knownErrorKeys: { [key: string]: string } = {
+        email: "An account with this email already exists.",
+        shortUrl: "Short URL is already taken",
+      };
+      let msg = knownErrorKeys[key];
+      if (!msg) {
+        msg = `${key} is already in use.`;
+      }
+      return res.status(StatusCodes.BAD_REQUEST).json({ error: true, msg });
+    }
+  }
+
+  if (err instanceof SyntaxError && err.message.includes("JSON")) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: true, msg: "Invalid JSON in request body" });
+  }
+
+  if (
+    !(process.env.SMTP_EMAIL_USER === undefined ||
+    process.env.MY_EMAIL === undefined)
+  ) {
+    // Send email to developer for unhandled errors
+    try {
+      const text = `Hi, an error occurred in the link shortener server. Please check the logs for more details.\n\n${err.message}\n\n${err}\n\n${err.stack}\n\nRequest URL: ${req.url}\n\nRequest Method: ${req.method}\n\nRequest Headers: ${JSON.stringify(req.headers, null, 2)}\n\n\n\nRequest Body: ${JSON.stringify(req.body, null, 2)}`;
+      console.log(text);
+      sendMail({
+        from: process.env.SMTP_EMAIL_USER,
+        to: process.env.MY_EMAIL,
+        subject: "Error occurred in link shortener server",
+        text,
+      })
+        .then(() => {
+          console.log("Email sent to developer");
+        })
+        .catch((err) => {
+          console.log("Error sending email");
+        });
+    } catch (e) {
+      console.log("Error sending email");
+    }
+  }
+
   return res
     .status(StatusCodes.INTERNAL_SERVER_ERROR)
-    .json({ msg: "Internal Server Error" });
-  let customError = {
-    // set default
-    statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
-    msg: err.message || "Something went wrong, try again later",
-  };
-  // if (err instanceof CustomAPIError) {
-  //   return res.status(err.statusCode).json({ msg: err.message })
-  // }
-  if (err.name === "ValidationError") {
-    console.log(Object.values(err.errors));
-    customError.msg = Object.values(err.errors)
-      .map((item) => item.message)
-      .join(", ");
-  }
-  if (err.name === "CastError") {
-    customError.msg = `No item found with id ${err.value}`;
-    customError.statusCode = StatusCodes.NOT_FOUND;
-  }
-  if (err.code && err.code === 11000) {
-    customError.msg = `Duplicate value entered for ${Object.keys(err.keyValue)} field, please choose another value`;
-    customError.statusCode = StatusCodes.BAD_REQUEST;
-  }
-  // console.log(err);
-  // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err })
-  return res.status(customError.statusCode).json({ msg: customError.msg });
+    .json({ error: true, msg: "Internal Server Error" });
 };
 
-module.exports = errorHandlerMiddleware;
+export default errorHandlerMiddleware;

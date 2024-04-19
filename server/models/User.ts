@@ -8,8 +8,8 @@ const UserSchema = new mongoose.Schema<IUser>(
     name: {
       type: String,
       required: [true, "Please provide name"],
-      minLength: 3,
-      maxLength: 50,
+      minLength: [3, "Name must be at least 3 characters"],
+      maxLength: [50, "Name must be at most 50 characters"],
     },
     email: {
       type: String,
@@ -24,7 +24,15 @@ const UserSchema = new mongoose.Schema<IUser>(
     password: {
       type: String,
       required: [true, "Please provide password"],
-      minLength: 6,
+      minLength: [6, "Password must be at least 6 characters"],
+    },
+    isAdministrator: {
+      type: Boolean,
+      default: false,
+    },
+    isActivated: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true },
@@ -37,7 +45,7 @@ UserSchema.pre("save", async function () {
 
 UserSchema.methods.createJWT = function () {
   return jwt.sign(
-    { userId: this._id},
+    { userId: this._id },
     process.env.JWT_SECRET ?? "secret-string",
     {
       expiresIn: process.env.JWT_LIFETIME,

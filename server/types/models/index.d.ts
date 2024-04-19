@@ -5,6 +5,8 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
+  isAdministrator: boolean;
+  isActivated: boolean;
   createdAt?: Date;
   updatedAt?: Date;
   createJWT: () => string;

@@ -40,10 +40,13 @@ const errorHandlerMiddleware = (
   }
 
   if (err instanceof mongoose.Error.ValidationError) {
+    const messages = Object.values(err.errors)
+      .map((item) => item.message)
+      .join(" and ");
     // Invalid data eg missing fields
     return res
       .status(StatusCodes.BAD_REQUEST)
-      .json({ error: true, msg: err.message });
+      .json({ error: true, msg: messages });
   }
 
   if (err instanceof mongoose.Error.CastError) {
@@ -78,8 +81,10 @@ const errorHandlerMiddleware = (
   }
 
   if (
-    !(process.env.SMTP_EMAIL_USER === undefined ||
-    process.env.MY_EMAIL === undefined)
+    !(
+      process.env.SMTP_EMAIL_USER === undefined ||
+      process.env.MY_EMAIL === undefined
+    )
   ) {
     // Send email to developer for unhandled errors
     try {

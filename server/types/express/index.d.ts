@@ -1,5 +1,5 @@
-import { Response, Request } from "express"
-import mongoose from "mongoose"
+import { Response, Request } from "express";
+import mongoose from "mongoose";
 
 export interface UserPayload {
   userId: mongoose.Types.ObjectId;

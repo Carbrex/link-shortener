@@ -9,10 +9,7 @@ const UrlSchema = new mongoose.Schema<IUrl>(
       minlength: [5, "Original url must be at least 5 characters"],
       maxlength: [500, "Original url must be at most 500 characters"],
       // should have at least one dot (.) in the URL
-      match: [
-        /\./,
-        "Please provide a valid URL to shorten",
-      ],
+      match: [/\./, "Please provide a valid URL to shorten"],
     },
     shortUrl: {
       type: String,
@@ -41,7 +38,7 @@ const UrlSchema = new mongoose.Schema<IUrl>(
     clickCount: {
       type: Number,
       default: 0,
-    }
+    },
   },
   { timestamps: true },
 );

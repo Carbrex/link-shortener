@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.min-h-section {
+  min-height: calc(100vh - 5rem);
+  height: 100%;
+}

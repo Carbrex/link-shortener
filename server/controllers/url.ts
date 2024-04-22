@@ -1,5 +1,9 @@
 import { StatusCodes } from "http-status-codes";
-import { BadRequestError, NotFoundError, UnauthenticatedError } from "../errors";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthenticatedError,
+} from "../errors";
 import Url from "../models/Url";
 import User from "../models/User";
 import sendMail from "../utils/sendMail";
@@ -27,16 +31,17 @@ const getAllLinks = async (req: Request, res: Response) => {
 
   const getExpiredAlso = req.query.expired as string;
   const expired = getExpiredAlso === "true";
-  let sortFields:string|string[] = (req.query.sort as string|string[]) || "createdAt";
+  let sortFields: string | string[] =
+    (req.query.sort as string | string[]) || "createdAt";
   if (typeof sortFields === "string") {
     sortFields = [sortFields];
   }
-  let sortField = (sortFields[0] as string)||"createdAt";// if multiple sort fields are provided, only the first one will be considered
+  let sortField = (sortFields[0] as string) || "createdAt"; // if multiple sort fields are provided, only the first one will be considered
   if (!validSortFields.includes(sortField)) {
     sortField = "createdAt";
   }
 
-  const sortOrder: SortOrder = (req.query.order as string) === "desc" ? -1 : 1;// only provide single sort order
+  const sortOrder: SortOrder = (req.query.order as string) === "desc" ? -1 : 1; // only provide single sort order
   const sortObject: { [key: string]: SortOrder } = {};
   sortObject[sortField] = sortOrder;
 
@@ -52,13 +57,16 @@ const getAllLinks = async (req: Request, res: Response) => {
       ...query,
       $or: [
         { hasExpirationDate: false },
-        { hasExpirationDate: true, expirationDate: { $gte: new Date(Date.now()) } },
+        {
+          hasExpirationDate: true,
+          expirationDate: { $gte: new Date(Date.now()) },
+        },
       ],
     };
   }
 
   const links = await Url.find(query).sort(sortObject);
-  
+
   res
     .status(StatusCodes.OK)
     .json({ count: links.length, links, msg: "Links successfully fetched" });
@@ -177,7 +185,7 @@ const deleteAllLinks = async (req: Request, res: Response) => {
   res
     .status(StatusCodes.OK)
     .json({ count: links.deletedCount, msg: "Links successfully deleted" });
-}
+};
 
 const reportLink = async (req: Request, res: Response) => {
   const shortUrl = req.params.shortUrl;
@@ -186,7 +194,7 @@ const reportLink = async (req: Request, res: Response) => {
     throw new NotFoundError(`No url with short url ${shortUrl}`);
   }
 
-  const user:IUser|null = await User.findById(req.user.userId);
+  const user: IUser | null = await User.findById(req.user.userId);
   if (!user) {
     throw new UnauthenticatedError("Unauthorized");
   }
@@ -218,5 +226,5 @@ export {
   createLink,
   deleteLink,
   reportLink,
-  deleteAllLinks
+  deleteAllLinks,
 };

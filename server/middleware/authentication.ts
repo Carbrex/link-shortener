@@ -11,7 +11,7 @@ const convertToObjectId = (id: string) => {
   } catch (error) {
     throw new UnauthenticatedError("Invalid Token");
   }
-}
+};
 
 const auth = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -23,7 +23,7 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
     token,
     process.env.JWT_SECRET ?? "secret-string",
   ) as { userId: string };
-  
+
   const userPayload: UserPayload = {
     userId: convertToObjectId(payload.userId),
   };

@@ -23,6 +23,9 @@ const UrlSchema = new mongoose.Schema<IUrl>(
       unique: true,
       index: true,
     },
+    password: {
+      type: String
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -4,7 +4,7 @@ export interface IUser {
   _id?: string;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   isAdministrator: boolean;
   isActivated: boolean;
   createdAt?: Date;
@@ -16,6 +16,7 @@ export interface IUser {
 export interface IUrl {
   originalUrl: string;
   shortUrl: string;
+  password?: string;
   createdBy: Schema.Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;

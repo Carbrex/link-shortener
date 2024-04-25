@@ -3,9 +3,9 @@ import express, { Express } from "express";
 import morgan from "morgan";
 // extra security
 // const helmet = require('helmet');
-// const cors = require('cors');
 // const xss = require('xss-clean');
-// const rateLimiter = require('express-rate-limit');
+const cors = require("cors");
+const rateLimiter = require("express-rate-limit");
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -27,11 +27,31 @@ import urlRouter from "./routes/url";
 import notFoundMiddleware from "./middleware/not-found";
 import errorHandlerMiddleware from "./middleware/error-handler";
 
-// app.set("trust proxy", 1);
-// // app.use(rateLimiter({
-// //   windowMs: 15*60*1000,//15 minutes
-// //   max: 100
-// // }));
+app.set("trust proxy", 1);
+
+app.use(
+  rateLimiter({
+    windowMs: 15 * 60 * 1000, //15 minutes
+    max: 100,
+  }),
+);
+
+const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
+
+app.use(
+  cors({
+    origin: function (origin: string | undefined, callback: any) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          "The CORS policy for this site does not allow access from the specified Origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+  }),
+);
+
 app.use(express.json());
 // extra packages
 // app.use(helmet());

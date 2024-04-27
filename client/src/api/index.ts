@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { SignInType, SignUpType } from "../types";
+import { EditUrlData, ShortenUrlData, SignInType, SignUpType, UrlData } from "../types";
 
 const URL = import.meta.env.PROD ? "/api/v1" : "http://localhost:3000/api/v1";
 
@@ -10,6 +10,7 @@ API.interceptors.request.use(
   function (config) {
     const token = localStorage.getItem("token") || "";
 
+    console.log(token);
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
@@ -38,15 +39,14 @@ API.interceptors.response.use(
     if (error.response) {
       toast.error(error.response.data?.msg);
     } else {
-      toast.error("Network Error: Please try again later.", {
-        toastId: "Network Error",
-      });
+      toast.error("Network Error: Please try again later.");
     }
     return Promise.reject(error);
   }
 );
 
 /* Auth API */
+export const getDetails = () => API.get("/auth");
 export const login = (signInData: SignInType) =>
   API.post("/auth/login", signInData);
 export const register = (signUpData: SignUpType) =>
@@ -56,3 +56,5 @@ export const register = (signUpData: SignUpType) =>
 
 /* Dashboard API */
 export const getDashboard = () => API.get("/url/all");
+export const createShortUrl = (urlData:ShortenUrlData) => API.post("/url/create", urlData);
+export const editShortUrl = (id: string, urlData:EditUrlData) => API.put(`/url/edit/${id}`, urlData);

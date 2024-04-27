@@ -26,7 +26,7 @@ const Layout = () => {
   return (
     <div>
       {!shouldHideNavbar && <Navbar />}
-      <div className="min-h-section w-screen flex justify-center bg-white dark:bg-gray-900 dark:text-white">
+      <div className="min-h-section w-full flex justify-center bg-white dark:bg-gray-900 dark:text-white">
         <Outlet />
       </div>
     </div>
@@ -54,12 +54,12 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Dashboard />,
-      },
-      {
-        path: "/",
         element: <ProtectedRoute />,
         children: [
+          {
+            path: "/",
+            element: <Dashboard />,
+          },
           {
             path: "dashboard",
             element: <Dashboard />,

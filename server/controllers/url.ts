@@ -9,7 +9,7 @@ import User from "../models/User";
 import sendMail from "../utils/sendMail";
 import { Request, Response } from "express";
 import mongoose, { SortOrder, mongo } from "mongoose";
-import { IUser } from "../types/models";
+import { IUrl, IUser } from "../types/models";
 
 const convertToObjectId = (id: string) => {
   try {
@@ -28,6 +28,8 @@ const getAllLinks = async (req: Request, res: Response) => {
     "updatedAt",
     "expirationDate",
   ];
+  // wait 2 seconds
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   const getExpiredAlso = req.query.expired as string;
   const expired = getExpiredAlso === "true";
@@ -41,15 +43,15 @@ const getAllLinks = async (req: Request, res: Response) => {
     sortField = "createdAt";
   }
 
-  const sortOrder: SortOrder = (req.query.order as string) === "desc" ? -1 : 1; // only provide single sort order
+  const sortOrder: SortOrder = (req.query.order as string) === "asc" ? 1 : -1; // only provide single sort order
   const sortObject: { [key: string]: SortOrder } = {};
   sortObject[sortField] = sortOrder;
 
   let query: {
     createdBy: mongoose.Types.ObjectId;
     $or?: [
-      { hasExpirationDate: boolean },
-      { hasExpirationDate: boolean; expirationDate: { $gte: Date } },
+      { hasExpirationDate: Boolean },
+      { hasExpirationDate: Boolean; expirationDate: { $gte: Date } },
     ];
   } = { createdBy: req.user.userId };
   if (!expired) {
@@ -76,19 +78,25 @@ const getAllLinks = async (req: Request, res: Response) => {
 const editLink = async (req: Request, res: Response) => {
   const linkId = req.params.id;
   const userId = req.user.userId;
-  const { hasExpirationDate, expirationDate } = req.body;
+  const { hasExpirationDate, expirationDate, hasPassword, password } = req.body;
   if (hasExpirationDate && !expirationDate) {
     throw new BadRequestError(
       "If you provide hasExpirationDate, you must provide expiration date as well",
     );
   }
-  const hasExpiration: boolean = hasExpirationDate === true;
-  const expiration: Date = hasExpiration
+  const hasExpiration: Boolean = hasExpirationDate === true;
+
+  const updatedFields: { [key: string]: any } = {};
+  if(hasPassword&&password) {
+    updatedFields.password = password;
+  }
+  updatedFields.hasExpirationDate = hasExpiration;
+  updatedFields.expirationDate = hasExpiration
     ? new Date(expirationDate)
     : new Date(Date.now() + 1000 * 60 * 60 * 24); // 24 hours
   const link = await Url.findOneAndUpdate(
     { _id: linkId, createdBy: userId },
-    { hasExpiration, expiration },
+    updatedFields,
     { new: true, runValidators: true },
   );
   if (!link) {
@@ -104,17 +112,26 @@ const redirectUrl = async (req: Request, res: Response) => {
   if (!url) {
     throw new NotFoundError(`No url with short url ${shortUrl}`);
   }
-  url.clickCount++;
+  if (url.clickCount !== undefined) {
+    url.clickCount++;
+  }
   await url.save();
   res.redirect(url.originalUrl);
 };
 
 const createLink = async (req: Request, res: Response) => {
+  // wait 2 seconds
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  console.log(req.body);
+
   let originalUrl: string = req.body.originalUrl;
   const expirationDate: string = req.body.expirationDate;
-  const hasExpiration: boolean = req.body.hasExpirationDate === true;
+  const hasExpiration: Boolean = req.body.hasExpirationDate === true;
   let shortUrl: string = req.body.shortUrl;
+  let hasPassword: Boolean = req.body.hasPassword === true;
+  let password: string = req.body.password;
 
+  console.log(originalUrl, expirationDate, hasExpiration, shortUrl);
   if (!originalUrl || (hasExpiration && !expirationDate)) {
     throw new BadRequestError(
       "originalUrl, hasExpirationDate, expirationDate are required",
@@ -123,6 +140,13 @@ const createLink = async (req: Request, res: Response) => {
 
   if (!originalUrl.startsWith("http") && !originalUrl.startsWith("https")) {
     originalUrl = `http://${originalUrl}`;
+  }
+
+  // check if original url is valid
+  try {
+    new URL(originalUrl);
+  } catch (error) {
+    throw new BadRequestError("Please provide a valid URL to shorten");
   }
 
   let expiration: Date;
@@ -153,13 +177,18 @@ const createLink = async (req: Request, res: Response) => {
     }
   }
 
-  const url = await Url.create({
+  const urlData: IUrl = {
     originalUrl,
     shortUrl,
-    createdBy: req.user.userId,
     hasExpirationDate: hasExpiration,
     expirationDate: expiration,
-  });
+    createdBy: req.user.userId,
+  };
+  if (hasPassword && password) {
+    urlData.password = password;
+  }
+
+  const url = await Url.create(urlData);
 
   res
     .status(StatusCodes.CREATED)

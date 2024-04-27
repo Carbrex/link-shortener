@@ -4,8 +4,8 @@ import morgan from "morgan";
 // extra security
 // const helmet = require('helmet');
 // const xss = require('xss-clean');
-const cors = require("cors");
-const rateLimiter = require("express-rate-limit");
+import cors from "cors";
+import rateLimiter from "express-rate-limit";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -16,7 +16,6 @@ app.use(morgan("dev"));
 
 // connectDB
 import connectDB from "./db/connect";
-// const connectDB = require("./db/connect");
 // const authenticateUser = require("./middleware/authentication");
 
 // // routers
@@ -32,7 +31,7 @@ app.set("trust proxy", 1);
 app.use(
   rateLimiter({
     windowMs: 15 * 60 * 1000, //15 minutes
-    max: 100,
+    max: 300,
   }),
 );
 

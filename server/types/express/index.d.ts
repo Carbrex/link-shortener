@@ -5,7 +5,7 @@ export interface UserPayload {
   userId: mongoose.Types.ObjectId;
   // name: string;
   // email: string;
-  // isAdministrator: boolean;
+  // isAdministrator: Boolean;
 }
 
 declare global {

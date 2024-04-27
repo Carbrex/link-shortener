@@ -17,10 +17,21 @@ import Dashboard from "./component/Dashboard";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import router from "./component/Router";
-import { useAppSelector } from "./hooks";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import { getUserData } from "./store/userSlice";
+import Loading from "./component/Loading";
 
 function App() {
-  const { isDarkMode } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+  const { isDarkMode, loadingUser } = useAppSelector(
+    (state) => state.user
+  );
+
+  useEffect(() => {
+    dispatch(getUserData());
+  }, []);
+
+  if (loadingUser) return <Loading />;
 
   return (
     <>
@@ -39,7 +50,7 @@ function App() {
           theme={isDarkMode ? "dark" : "light"}
         />
         <RouterProvider router={router} />
-        <button onClick={() => toast.success("hi")}>toastify</button>
+        {/* <button onClick={() => toast.success("hi")}>toastify</button> */}
         {/* <h1 className="text-3xl font-bold underline">Hello world!</h1> */}
       </div>
     </>

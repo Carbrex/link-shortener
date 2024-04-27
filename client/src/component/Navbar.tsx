@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { LoginState } from "../store/userSlice";
 import { useAppDispatch, useAppSelector } from "../hooks";
+import Logo from "../assets/lynk.png";
+import WebpLogo from "../assets/lynk.webp";
 
 function Navbar() {
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -12,14 +15,16 @@ function Navbar() {
           href="https://flowbite.com/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img
-            src="https://flowbite.com/docs/images/logo.svg"
-            className="h-8"
-            alt="Flowbite Logo"
-          />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+          <picture>
+            {/* <img src={WebpLogo} className="h-16" alt="Lynk Logo" />
+            <img src={Logo} className="h-16" alt="Lynk Logo" /> */}
+            <source srcSet={WebpLogo} type="image/webp" />
+            <source srcSet={Logo} type="image/png" />
+            <img src={Logo} className="h-11" alt="Lynk Logo" />
+          </picture>
+          {/* <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
             Flowbite
-          </span>
+          </span> */}
         </a>
         <div className="flex md:hidden">
           <DarkModeButton />
@@ -114,6 +119,14 @@ function Navbar() {
                 <p className="md:hidden">Profile</p>
               </a>
             </li>
+            <li>
+              <button
+                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                onClick={() => dispatch({ type: "user/LOGOUT" })}
+              >
+                Logout
+              </button>
+            </li>
           </ul>
         </div>
       </div>
@@ -128,7 +141,7 @@ function DarkModeButton() {
   const setIsDarkMode = () => {
     dispatch({ type: "user/TOGGLE_DARK_MODE" });
   };
-  
+
   return (
     <button
       id="theme-toggle"

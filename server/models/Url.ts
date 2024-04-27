@@ -24,7 +24,9 @@ const UrlSchema = new mongoose.Schema<IUrl>(
       index: true,
     },
     password: {
-      type: String
+      type: String,
+      minlength: [4, "Password must be at least 4 characters"],
+      maxlength: [20, "Password must be at most 20 characters"],
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

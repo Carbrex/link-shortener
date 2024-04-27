@@ -1,52 +1,71 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "./Pagination";
 import ShortenUrl from "./ShortenUrl";
-import EditUrl from "./EditUrl";
+import EditUrl from "./ShowAndEditUrl";
 import { getDashboard } from "../api";
+import Loading from "./Loading";
+import { toast } from "react-toastify";
+import { UrlData } from "../types";
 
 function Dashboard() {
-  const [tableData, setTableData] = useState([
-    {
-      _id: "1",
-      shortUrl: "abcdef",
-      originalUrl: "https://www.google.com",
-      clicks: 0,
-      createdAt: "2021-09-25T12:00:00.000Z",
-    },
-    {
-      _id: "2",
-      shortUrl: "defghi",
-      originalUrl: "https://www.facebook.com",
-      clicks: 0,
-      createdAt: "2021-09-25T12:00:00.000Z",
-    },
-    {
-      _id: "3",
-      shortUrl: "ghijkl",
-      originalUrl: "https://www.twitter.com",
-      clicks: 0,
-      createdAt: "2021-09-25T12:00:00.000Z",
-    },
-  ]);
+  const [tableData, setTableData] = useState<UrlData[]>([] as UrlData[]);
   const [showShortenUrl, setShowShortenUrl] = useState<Boolean>(false);
   const [editUrl, setEditUrl] = useState<Boolean>(false);
   const [editItemId, setEditItemId] = useState<string | null>(null);
   const [loading, setLoading] = useState<Boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [maxValue, setMaxValue] = useState(0);
+
+  const loadDashboard = async (showMessage: boolean = true): Promise<void> => {
+    setLoading(true);
+    try {
+      // toast.promise(
+      //   getDashboard()
+      //     .then((data: any) => {
+      //       setTableData(data.links);
+      //       setMaxValue(data.count);
+      //       setLoading(false);
+      //     })
+      //     .catch((error): void => {
+      //       if (error instanceof Error) {
+      //         console.log(error.message);
+      //       } else console.log(error);
+      //       setLoading(false);
+      //     }),
+      //   {
+      //     pending: "Loading Dashboard...",
+      //     success: "Dashboard loaded successfully",
+      //     error: "Error loading Dashboard",
+      //   }
+      // );
+      const dataPromise = getDashboard();
+      if (showMessage) {
+        toast.promise(dataPromise, {
+          pending: "Loading Dashboard...",
+          success: "Dashboard loaded successfully",
+          error: "Error loading Dashboard",
+        });
+      }
+      const data:any = await dataPromise;
+      setTableData(data.links);
+      setMaxValue(data.count);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      } else console.log(error);
+      toast.error("Error loading Dashboard");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getUrlData = (id: string) => {
+    return tableData.find((data) => data._id === id);
+  };
 
   useEffect(() => {
-    setLoading(true);
-    getDashboard()
-      .then((data) => {
-        console.log(data);
-        // setTableData(data.urls);
-        // setLoading(false);
-      })
-      .catch((error): void => {
-        if (error instanceof Error) {
-          console.log(error.message);
-        } else console.log(error);
-        setLoading(false);
-      });
+    loadDashboard();
   }, []);
 
   return (
@@ -129,13 +148,17 @@ function Dashboard() {
                   </a>
                 </td>
                 <td className="px-6 py-4 hidden xs:table-cell">
-                  {data.clicks}
+                  {data.clickCount}
                 </td>
                 <td className="px-6 py-4 hidden lg:table-cell">
                   <time>{`${new Date(data.createdAt).toLocaleString()}`}</time>
                 </td>
                 <td className="px-6 py-4 hidden md:table-cell">
-                  <time>{`${new Date(data.createdAt).toLocaleString()}`}</time>
+                  {!data.hasExpirationDate ? (
+                    "Never"
+                  ) : (
+                    <time>{`${new Date(data.expirationDate).toLocaleString()}`}</time>
+                  )}
                 </td>
                 <td className="px-6 py-4 hover:cursor-pointer">
                   <p
@@ -145,7 +168,7 @@ function Dashboard() {
                       setEditItemId(data._id);
                     }}
                   >
-                    Edit
+                    Show
                   </p>
                 </td>
               </tr>
@@ -163,16 +186,27 @@ function Dashboard() {
         </table>
       </div>
       {editUrl && editItemId && (
-        <EditUrl _id={editItemId} editUrl={editUrl} setEditUrl={setEditUrl} />
+        <EditUrl
+          _id={editItemId}
+          editUrl={editUrl}
+          setEditUrl={setEditUrl}
+          loadDashboard={loadDashboard}
+          urlData={getUrlData(editItemId)}
+        />
       )}
       {showShortenUrl && (
         <ShortenUrl
           showShortenUrl={showShortenUrl}
           setShowShortenUrl={setShowShortenUrl}
+          loadDashboard={loadDashboard}
         />
       )}
       <div className="my-10 flex justify-center w-full">
-        <Pagination />
+        <Pagination
+          maxValue={maxValue}
+          currentPage={currentPage}
+          perPage={perPage}
+        />
       </div>
     </div>
   );

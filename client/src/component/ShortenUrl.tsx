@@ -1,12 +1,72 @@
 import React from "react";
+import { toast } from "react-toastify";
+import { createShortUrl } from "../api";
+
+interface ShortenUrlProps {
+  showShortenUrl: Boolean;
+  setShowShortenUrl: React.Dispatch<React.SetStateAction<Boolean>>;
+  loadDashboard: () => void;
+}
+
+const initialState = {
+  originalUrl: "",
+  expirationDate: new Date(new Date().getTime() + 1000 * 60 * 60 * 24),
+  hasExpirationDate: false,
+  shortUrl: "",
+  autoShorten: true,
+  hasPassword: false,
+  password: "",
+};
 
 function ShortenUrl({
   showShortenUrl,
   setShowShortenUrl,
-}: {
-  showShortenUrl: Boolean;
-  setShowShortenUrl: React.Dispatch<React.SetStateAction<Boolean>>;
-}) {
+  loadDashboard,
+}: ShortenUrlProps) {
+  const [shortenUrlData, setShortenUrlData] = React.useState(initialState);
+  const [alreadyShortening, setAlreadyShortening] = React.useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (alreadyShortening) return;
+    setAlreadyShortening(true);
+    console.log(shortenUrlData);
+    if (!shortenUrlData.autoShorten && !shortenUrlData.shortUrl) {
+      toast.error("Please enter a short URL or disable auto-shorten");
+      setAlreadyShortening(false);
+      return;
+    }
+    if (shortenUrlData.hasPassword && !shortenUrlData.password) {
+      toast.error("Please enter a password or disable password protection");
+      setAlreadyShortening(false);
+      return;
+    }
+    if (
+      shortenUrlData.hasExpirationDate &&
+      shortenUrlData.expirationDate < new Date()
+    ) {
+      toast.error("Please enter a valid future date for expiration");
+      setAlreadyShortening(false);
+      return;
+    }
+    try {
+      await toast.promise(
+        createShortUrl(shortenUrlData),
+        {
+          pending: "Creating short URL...",
+          success: "Short URL created successfully",
+        }
+      );
+      loadDashboard();
+      setShortenUrlData(initialState);
+      setShowShortenUrl(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setAlreadyShortening(false);
+    }
+  };
+
   return (
     <>
       <div
@@ -24,11 +84,11 @@ function ShortenUrl({
           aria-hidden="true"
           className={`${!showShortenUrl && "hidden"} overflow-y-auto overflow-x-hidden justify-center items-center md:inset-0 max-h-full`}
         >
-          <div className="relative p-4 w-[95vw] max-w-xl max-h-full">
-            <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <div className="relative p-4 w-[95vw] max-w-xl max-h-full flex flex-col">
+            <div className="bg-white rounded-lg shadow dark:bg-gray-700 min-h-[80vh]">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Create New Product
+                  Create New Url
                 </h3>
                 <button
                   type="button"
@@ -54,97 +114,199 @@ function ShortenUrl({
                   <span className="sr-only">Close modal</span>
                 </button>
               </div>
-              <form className="p-4 md:p-5">
+              <form
+                className="p-4 md:p-5 flex-grow min-h-[70vh] flex flex-col justify-between"
+                onSubmit={handleSubmit}
+              >
                 <div className="grid gap-4 mb-4 grid-cols-2">
                   <div className="col-span-2">
                     <label
                       htmlFor="name"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Name
+                      Original URL
                     </label>
                     <input
                       type="text"
-                      name="name"
-                      id="name"
+                      name="originalUrl"
+                      id="originalUrl"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="Type product name"
+                      placeholder="Enter original URL"
+                      onChange={(e) => {
+                        setShortenUrlData((prev) => ({
+                          ...prev,
+                          originalUrl: e.target.value,
+                        }));
+                      }}
+                      value={shortenUrlData.originalUrl}
                       required={true}
+                      minLength={5}
+                      maxLength={500}
                     />
                   </div>
-                  <div className="col-span-2 sm:col-span-1">
+                  <div className="col-span-4 sm:col-span-2 flex items-center justify-around">
                     <label
-                      htmlFor="price"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      htmlFor="autoShorten"
+                      className="mt-auto text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Price
+                      Shorten Automatically
                     </label>
                     <input
-                      type="number"
-                      name="price"
-                      id="price"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="$2999"
-                      required={true}
+                      type="checkbox"
+                      name="autoShorten"
+                      id="autoShorten"
+                      className="h-4 w-4  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 mt-auto mb-1 ml-2 mr-auto dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      onChange={(e) => {
+                        setShortenUrlData((prev) => ({
+                          ...prev,
+                          autoShorten: e.target.checked,
+                        }));
+                      }}
+                      checked={shortenUrlData.autoShorten}
                     />
                   </div>
-                  {/* <div className="col-span-2 sm:col-span-1">
+                  {!shortenUrlData.autoShorten && (
+                    <div className="col-span-4 sm:col-span-2">
+                      <label
+                        htmlFor="shortUrl"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Short URL (5-10 characters only - letters and numbers
+                        only)
+                      </label>
+                      <input
+                        type="string"
+                        name="shortUrl"
+                        id="shortUrl"
+                        className={`${!shortenUrlData.autoShorten ? "bg-gray-50 dark:bg-gray-600" : "bg-gray-200 dark:bg-gray-500 "} border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:placeholder-gray-400`}
+                        placeholder={
+                          shortenUrlData.autoShorten
+                            ? "Auto-generated"
+                            : "Enter short URL"
+                        }
+                        onChange={(e) => {
+                          setShortenUrlData((prev) => ({
+                            ...prev,
+                            shortUrl: e.target.value,
+                          }));
+                        }}
+                        value={shortenUrlData.shortUrl}
+                        disabled={shortenUrlData.autoShorten}
+                        minLength={5}
+                        maxLength={10}
+                      />
+                    </div>
+                  )}
+                  <div className="col-span-4 sm:col-span-2 flex items-center">
                     <label
-                      htmlFor="price"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      htmlFor="hasExpirationDate"
+                      className="text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Price
+                      Set Expiration Date
                     </label>
                     <input
-                      type="datetime-local"
-                      name="price"
-                      id="price"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="$2999"
-                      required={true}
+                      type="checkbox"
+                      name="hasExpirationDate"
+                      id="hasExpirationDate"
+                      className="h-4 w-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 m-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      onChange={(e) => {
+                        setShortenUrlData((prev) => ({
+                          ...prev,
+                          hasExpirationDate: e.target.checked,
+                        }));
+                      }}
+                      checked={shortenUrlData.hasExpirationDate}
                     />
-                  </div> */}
-                  <label htmlFor="date">Select a Date:</label>
-                  <input type="date" id="date" name="date" />
-                  <label htmlFor="time">Select a Time:</label>
-                  <input type="time" id="time" name="time" />
+                  </div>
+                  {shortenUrlData.hasExpirationDate && (
+                    <div className="col-span-2 sm:col-span-1">
+                      <label
+                        htmlFor="expirationDate"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Expiration Date
+                      </label>
+                      <input
+                        type="date"
+                        name="expirationDate"
+                        id="expirationDate"
+                        className={`${shortenUrlData.hasExpirationDate ? "bg-gray-50 dark:bg-gray-600" : "bg-gray-200 dark:bg-gray-500"}  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
+                        onChange={(e) => {
+                          setShortenUrlData((prev) => ({
+                            ...prev,
+                            expirationDate: new Date(e.target.value),
+                          }));
+                        }}
+                        value={
+                          shortenUrlData.expirationDate
+                            .toISOString()
+                            .split("T")[0]
+                        }
+                        disabled={!shortenUrlData.hasExpirationDate}
+                        min={new Date().toISOString().split("T")[0]}
+                        max={
+                          new Date(
+                            new Date().getTime() + 1000 * 60 * 60 * 24 * 365
+                          )
+                            .toISOString()
+                            .split("T")[0]
+                        }
+                      />
+                    </div>
+                  )}
 
-                  <div className="col-span-2 sm:col-span-1">
+                  <div className="col-span-4 sm:col-span-2 flex items-center">
                     <label
-                      htmlFor="category"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      htmlFor="hasPassword"
+                      className="text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Category
+                      Set Password
                     </label>
-                    <select
-                      id="category"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    >
-                      <option selected={true}>Select category</option>
-                      <option value="TV">TV/Monitors</option>
-                      <option value="PC">PC</option>
-                      <option value="GA">Gaming/Console</option>
-                      <option value="PH">Phones</option>
-                    </select>
-                  </div>
-                  <div className="col-span-2">
-                    <label
-                      htmlFor="description"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Product Description
-                    </label>
-                    <textarea
-                      id="description"
-                      rows={4}
-                      className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="Write product description here"
+                    <input
+                      type="checkbox"
+                      name="hasPassword"
+                      id="hasPassword"
+                      className="h-4 w-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 m-2 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      onChange={(e) => {
+                        setShortenUrlData((prev) => ({
+                          ...prev,
+                          hasPassword: e.target.checked,
+                        }));
+                      }}
+                      checked={shortenUrlData.hasPassword}
                     />
                   </div>
+
+                  {shortenUrlData.hasPassword && (
+                    <div className="col-span-4 sm:col-span-2">
+                      <label
+                        htmlFor="password"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Password
+                      </label>
+                      <input
+                        type="text"
+                        name="password"
+                        id="password"
+                        className={`${shortenUrlData.hasPassword ? "bg-gray-50 dark:bg-gray-600" : "bg-gray-200 dark:bg-gray-500"} border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
+                        onChange={(e) => {
+                          setShortenUrlData((prev) => ({
+                            ...prev,
+                            password: e.target.value,
+                          }));
+                        }}
+                        value={shortenUrlData.password}
+                        minLength={4}
+                        maxLength={20}
+                        disabled={!shortenUrlData.hasPassword}
+                      />
+                    </div>
+                  )}
                 </div>
                 <button
                   type="submit"
-                  className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-fit p-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   <svg
                     className="me-1 -ms-1 w-5 h-5"
@@ -158,7 +320,7 @@ function ShortenUrl({
                       clipRule="evenodd"
                     ></path>
                   </svg>
-                  Add new product
+                  Create Short URL
                 </button>
               </form>
             </div>

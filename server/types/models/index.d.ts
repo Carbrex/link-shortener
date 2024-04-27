@@ -1,26 +1,26 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 export interface IUser {
   _id?: string;
   name: string;
   email: string;
   password?: string;
-  isAdministrator: boolean;
-  isActivated: boolean;
+  isAdministrator: Boolean;
+  isActivated: Boolean;
   createdAt?: Date;
   updatedAt?: Date;
   createJWT: () => string;
-  comparePassword: (candidatePassword: string) => Promise<boolean>;
+  comparePassword: (candidatePassword: string) => Promise<Boolean>;
 }
 
 export interface IUrl {
   originalUrl: string;
   shortUrl: string;
   password?: string;
-  createdBy: Schema.Types.ObjectId;
+  createdBy: mongoose.Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
-  hasExpirationDate: boolean;
+  hasExpirationDate: Boolean;
   expirationDate?: Date;
-  clickCount: number;
+  clickCount?: number;
 }

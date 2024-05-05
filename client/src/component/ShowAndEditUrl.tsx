@@ -26,7 +26,16 @@ function ShowAndEdit({
       </>
     );
   }
-  return <ShowUrl _id={_id} editUrl={editUrl} setEditUrl={setEditUrl} loadDashboard={loadDashboard} urlData={urlData} setIsEditing={setIsEditing}/>;
+  return (
+    <ShowUrl
+      _id={_id}
+      editUrl={editUrl}
+      setEditUrl={setEditUrl}
+      loadDashboard={loadDashboard}
+      urlData={urlData}
+      setIsEditing={setIsEditing}
+    />
+  );
 }
 
 export default ShowAndEdit;

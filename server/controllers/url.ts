@@ -87,7 +87,7 @@ const editLink = async (req: Request, res: Response) => {
   const hasExpiration: Boolean = hasExpirationDate === true;
 
   const updatedFields: { [key: string]: any } = {};
-  if(hasPassword&&password) {
+  if (hasPassword && password) {
     updatedFields.password = password;
   }
   updatedFields.hasExpirationDate = hasExpiration;

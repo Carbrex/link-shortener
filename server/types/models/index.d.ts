@@ -4,6 +4,7 @@ export interface IUser {
   _id?: string;
   name: string;
   email: string;
+  profilePicture?: string;
   password?: string;
   isAdministrator: Boolean;
   isActivated: Boolean;

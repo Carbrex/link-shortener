@@ -17,28 +17,9 @@ function Dashboard() {
   const [perPage, setPerPage] = useState(10);
   const [maxValue, setMaxValue] = useState(0);
 
-  const loadDashboard = async (showMessage: boolean = true): Promise<void> => {
+  const loadDashboard = async (showMessage: boolean = false): Promise<void> => {
     setLoading(true);
     try {
-      // toast.promise(
-      //   getDashboard()
-      //     .then((data: any) => {
-      //       setTableData(data.links);
-      //       setMaxValue(data.count);
-      //       setLoading(false);
-      //     })
-      //     .catch((error): void => {
-      //       if (error instanceof Error) {
-      //         console.log(error.message);
-      //       } else console.log(error);
-      //       setLoading(false);
-      //     }),
-      //   {
-      //     pending: "Loading Dashboard...",
-      //     success: "Dashboard loaded successfully",
-      //     error: "Error loading Dashboard",
-      //   }
-      // );
       const dataPromise = getDashboard();
       if (showMessage) {
         toast.promise(dataPromise, {
@@ -47,7 +28,7 @@ function Dashboard() {
           error: "Error loading Dashboard",
         });
       }
-      const data:any = await dataPromise;
+      const data: any = await dataPromise;
       setTableData(data.links);
       setMaxValue(data.count);
     } catch (error) {
@@ -67,6 +48,10 @@ function Dashboard() {
   useEffect(() => {
     loadDashboard();
   }, []);
+
+  // if (loading) {
+  //   return <Loading />;
+  // }
 
   return (
     <div>
@@ -123,57 +108,68 @@ function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((data) => (
-              <tr
-                key={data._id}
-                className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
-              >
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex flex-col"
+            {loading ? (
+              <>
+                <tr className="h-5"></tr>
+                <tr className="h-12">
+                  <td></td>
+                  <td></td>
+                  <Loading />
+                </tr>
+              </>
+            ) : (
+              tableData.map((data) => (
+                <tr
+                  key={data._id}
+                  className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                 >
-                  {data.shortUrl}
-                  <a
-                    href={`/${data.shortUrl}`}
-                    className="text-xs text-gray-500 dark:text-gray-400"
-                    target="_blank"
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex flex-col"
                   >
-                    {`${window.location.hostname}/${data.shortUrl}`}
-                  </a>
-                </th>
-                <td className="px-6 py-4 hidden sm:table-cell">
-                  <a href={`${data.originalUrl}`} target="_blank">
-                    {data.originalUrl.slice(0, 30)}
-                    {data.originalUrl.length > 30 ? "..." : ""}
-                  </a>
-                </td>
-                <td className="px-6 py-4 hidden xs:table-cell">
-                  {data.clickCount}
-                </td>
-                <td className="px-6 py-4 hidden lg:table-cell">
-                  <time>{`${new Date(data.createdAt).toLocaleString()}`}</time>
-                </td>
-                <td className="px-6 py-4 hidden md:table-cell">
-                  {!data.hasExpirationDate ? (
-                    "Never"
-                  ) : (
-                    <time>{`${new Date(data.expirationDate).toLocaleString()}`}</time>
-                  )}
-                </td>
-                <td className="px-6 py-4 hover:cursor-pointer">
-                  <p
-                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    onClick={() => {
-                      setEditUrl((prev: Boolean) => !prev);
-                      setEditItemId(data._id);
-                    }}
-                  >
-                    Show
-                  </p>
-                </td>
-              </tr>
-            ))}
-            {tableData.length === 0 && (
+                    {data.shortUrl}
+                    <a
+                      href={`/${data.shortUrl}`}
+                      className="text-xs text-gray-500 dark:text-gray-400"
+                      target="_blank"
+                    >
+                      {`${window.location.hostname}/${data.shortUrl}`}
+                    </a>
+                  </th>
+                  <td className="px-6 py-4 hidden sm:table-cell">
+                    <a href={`${data.originalUrl}`} target="_blank">
+                      {data.originalUrl.slice(0, 30)}
+                      {data.originalUrl.length > 30 ? "..." : ""}
+                    </a>
+                  </td>
+                  <td className="px-6 py-4 hidden xs:table-cell">
+                    {data.clickCount}
+                  </td>
+                  <td className="px-6 py-4 hidden lg:table-cell">
+                    <time>{`${new Date(data.createdAt).toLocaleString()}`}</time>
+                  </td>
+                  <td className="px-6 py-4 hidden md:table-cell">
+                    {!data.hasExpirationDate ? (
+                      "Never"
+                    ) : (
+                      <time>{`${new Date(data.expirationDate).toLocaleString()}`}</time>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 hover:cursor-pointer">
+                    <p
+                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      onClick={() => {
+                        setEditUrl((prev: Boolean) => !prev);
+                        setEditItemId(data._id);
+                      }}
+                    >
+                      Show
+                    </p>
+                  </td>
+                </tr>
+              ))
+            )}
+            {!loading && tableData.length === 0 && (
               <>
                 <tr className="max-w-screen ">
                   <td className="hidden xs:table-cell"></td>

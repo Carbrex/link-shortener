@@ -42,7 +42,7 @@ function EditUrl({
     }
     try {
       const editPromise = editShortUrl(_id, shortenUrlData);
-      const combinedPromise = editPromise.then(async (response:any) => {
+      const combinedPromise = editPromise.then(async (response: any) => {
         if (!response.error) {
           await loadDashboard(false);
         }
@@ -53,7 +53,7 @@ function EditUrl({
         success: "URL edited successfully",
         error: "Error editing URL",
       });
-      const response:any = await combinedPromise;
+      const response: any = await combinedPromise;
       if (response.error) {
         console.log(response.error);
       } else {
@@ -86,7 +86,7 @@ function EditUrl({
             <div className="bg-white rounded-lg shadow dark:bg-gray-700 min-h-[80vh]">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Show and Edit existing URL{_id}
+                  Editing
                 </h3>
                 <button
                   type="button"
@@ -199,7 +199,7 @@ function EditUrl({
                         min={new Date().toISOString().split("T")[0]}
                         max={
                           new Date(
-                            new Date().getTime() + 1000 * 60 * 60 * 24 * 365
+                            new Date().getTime() + 1000 * 60 * 60 * 24 * 365,
                           )
                             .toISOString()
                             .split("T")[0]

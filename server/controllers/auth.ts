@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { BadRequestError, UnauthenticatedError } from "../errors";
 import { Request, Response } from "express";
 import { IUser } from "../types/models";
+import { uploadProfileImage } from "../utils/cloudinary";
 
 const register = async (req: Request, res: Response) => {
   if (!req.body.name || !req.body.email || !req.body.password) {
@@ -14,6 +15,7 @@ const register = async (req: Request, res: Response) => {
     name: user.name,
     isAdministrator: user.isAdministrator ?? false,
     token,
+    msg: "Registration successful",
   });
 };
 
@@ -37,6 +39,7 @@ const login = async (req: Request, res: Response) => {
     name: user.name,
     isAdministrator: user.isAdministrator ?? false,
     token,
+    msg: "Login successful",
   });
 };
 
@@ -53,7 +56,62 @@ const sendDetails = async (req: Request, res: Response) => {
     name: user.name,
     isAdministrator: user.isAdministrator ?? false,
     token,
+    msg: "User details sent",
   });
 };
 
-export { register, login, sendDetails };
+const profile = async (req: Request, res: Response) => {
+  const userId = req.user.userId;
+
+  const user = await User.findById(userId).select(
+    "email name profilePicture -_id",
+  );
+  if (!user) {
+    throw new UnauthenticatedError("Unauthorized");
+  }
+  res.status(StatusCodes.OK).json({
+    user,
+    msg: "User details sent",
+  });
+};
+
+const updateProfile = async (req: Request, res: Response) => {
+  const userId = req.user.userId;
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new UnauthenticatedError("Unauthorized");
+  }
+  const { name } = req.body;
+  user.name = name;
+  await user.save();
+  const { email, profilePicture: pp } = user;
+  res.status(StatusCodes.OK).json({
+    user: { email, name, profilePicture: pp },
+    msg: "Profile updated successfully",
+  });
+};
+
+const uploadProfilePicture = async (req: Request, res: Response) => {
+  const userId = req.user.userId;
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new UnauthenticatedError("Unauthorized");
+  }
+  const cloudinary_url = await uploadProfileImage(req);
+  user.profilePicture = cloudinary_url;
+  await user.save();
+  const { email, name, profilePicture } = user;
+  res.status(StatusCodes.OK).json({
+    user: { email, name, profilePicture },
+    msg: "Profile picture uploaded successfully",
+  });
+};
+
+export {
+  register,
+  login,
+  sendDetails,
+  profile,
+  updateProfile,
+  uploadProfilePicture,
+};

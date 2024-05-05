@@ -23,15 +23,18 @@ import Loading from "./component/Loading";
 
 function App() {
   const dispatch = useAppDispatch();
-  const { isDarkMode, loadingUser } = useAppSelector(
-    (state) => state.user
-  );
+  const { isDarkMode, loadingUser } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getUserData());
   }, []);
 
-  if (loadingUser) return <Loading />;
+  if (loadingUser)
+    return (
+      <div className="min-h-section flex items-center justify-center">
+        <Loading />
+      </div>
+    );
 
   return (
     <>

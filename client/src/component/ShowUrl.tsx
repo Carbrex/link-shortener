@@ -33,7 +33,7 @@ function ShowUrl({
             <div className="bg-white rounded-lg shadow dark:bg-gray-700 min-h-[80vh]">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Show and Edit existing URL{_id}
+                  URL Details
                 </h3>
                 <button
                   type="button"
@@ -97,20 +97,18 @@ function ShowUrl({
                     />
                   </div>
                   <div>
-                    <p
-                      
-                    >
-                      <span className="inline mb-2 mr-2 text-sm font-medium text-gray-900 dark:text-white">Clicks:</span>{urlData.clickCount}
+                    <p>
+                      <span className="inline mb-2 mr-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Clicks:
+                      </span>
+                      {urlData.clickCount}
                     </p>
                   </div>
                   <div className="col-span-4 sm:col-span-2">
-                    <label
-                      htmlFor="expirationDate"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Expiration Date
-                    </label>
                     <p>
+                      <span className="inline mb-2 mr-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Expiration Date:
+                      </span>
                       {urlData.hasExpirationDate ? (
                         <time>{`${new Date(urlData.expirationDate).toLocaleString()}`}</time>
                       ) : (

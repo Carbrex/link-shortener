@@ -1,6 +1,63 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getProfile, updateProfile, uploadProfilePicture } from "../api";
+import Loading from "./Loading";
+import { ProfileType } from "../types";
+import { toast } from "react-toastify";
 
 function Profile() {
+  const [profile, setProfile] = useState<ProfileType>({
+    name: "",
+    email: "",
+    profilePicture: "",
+  });
+  const [editProfileData, setEditProfileData] = useState<ProfileType>({
+    name: "",
+    email: "",
+    profilePicture: "",
+  });
+  const [loading, setLoading] = useState(true);
+  const [image, setImage] = useState<File | null>(null);
+  const [edit, setEdit] = useState(false);
+
+  const profileUpdateHandler = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    updateProfile(editProfileData).then((data: any) => {
+      setProfile(data.user);
+      setEditProfileData(data.user);
+      setEdit(false);
+    });
+  };
+
+  const uploadImage = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    if (!image) {
+      toast.error("Please select an image");
+      return;
+    }
+    toast.loading("Uploading Image...", { toastId: "uploading-profile-image" });
+    uploadProfilePicture(image).then((data: any) => {
+      setProfile(data.user);
+      setEditProfileData(data.user);
+      setEdit(false);
+    }).finally(() => {
+      setImage(null);
+      toast.done("uploading-profile-image");
+    });
+  };
+
+  useEffect(() => {
+    getProfile().then((data: any) => {
+      setProfile(data.user);
+      setEditProfileData(data.user);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading || !profile.email) return <Loading />;
   return (
     <div className="w-full max-w-screen-xl flex gap-4 flex-col p-8">
       <div className="flex flex-col gap-8 md:flex-row md:gap-20">
@@ -9,16 +66,50 @@ function Profile() {
           <p>Update your profile information</p>
         </div>
         <div>
-          <div className="flex flex-col md:justify-center md:flex-row md:gap-12">
+          <div className="flex flex-col">
             <img
-              src="https://via.placeholder.com/150"
+              src={editProfileData.profilePicture}
               alt="Profile"
               className="w-32 h-32 rounded mb-5"
             />
             <div>
-              <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              <div>
+                <label
+                  htmlFor="profileImage"
+                  className="block text-sm text-gray-500 dark:text-gray-300"
+                >
+                  Change Image
+                </label>
+
+                <input
+                  type="file"
+                  accept="image/png, image/jpeg, image/jpg, image/webp"
+                  multiple={false}
+                  className="block w-96 max-w-[30vw] px-3 py-2 mt-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg file:bg-gray-200 file:text-gray-700 file:text-sm file:px-4 file:py-1 file:border-none file:rounded-full dark:file:bg-gray-800 dark:file:text-gray-200 dark:text-gray-300 placeholder-gray-400/70 dark:placeholder-gray-500 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 dark:border-gray-600 dark:bg-gray-900 dark:focus:border-blue-300"
+                  onChange={(e) => {
+                    if (
+                      e.currentTarget.files &&
+                      e.currentTarget.files.length > 0
+                    ) {
+                      if (e.currentTarget.files[0].size > 1024 * 1024) {
+                        e.currentTarget.value = "";
+                        alert("File size should be less than 1MB");
+                        return;
+                      }
+                      setImage(e.currentTarget.files[0]);
+                    }
+                  }}
+                />
+                <button
+                  onClick={uploadImage}
+                  className="text-white mt-3 bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700"
+                >
+                  Upload Image
+                </button>
+              </div>
+              {/* <button className="">
                 Change Image
-              </button>
+              </button> */}
               <p className="text-sm">
                 JPG, JPEG, PNG and WEBP allowed upto 1MB
               </p>
@@ -36,8 +127,15 @@ function Profile() {
               <input
                 type="text"
                 id="name"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block0 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[80%]"
-                placeholder="name@flowbite.com"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block0 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[30vw]"
+                value={editProfileData.name}
+                disabled={!edit}
+                onChange={(e) =>
+                  setEditProfileData({
+                    ...editProfileData,
+                    name: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="mb-5">
@@ -51,16 +149,29 @@ function Profile() {
                 type="email"
                 id="email"
                 disabled
-                className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-800 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[80%]"
-                placeholder="name@flowbite.com"
+                className="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-800 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[30vw]"
+                placeholder={editProfileData.email}
               />
             </div>
             <button
-              type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700"
+              onClick={(e) => {
+                e.preventDefault();
+                setEdit(!edit);
+                setEditProfileData(profile);
+              }}
             >
-              Change details
+              {edit ? "Cancel" : "Edit"}
             </button>
+            {edit && (
+              <button
+                // type="submit"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700"
+                onClick={profileUpdateHandler}
+              >
+                Change details
+              </button>
+            )}
           </form>
         </div>
       </div>
@@ -81,7 +192,7 @@ function Profile() {
               <input
                 type="password"
                 id="current-password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[80%]"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[30vw]"
                 placeholder="Enter current password"
               />
             </div>
@@ -95,7 +206,7 @@ function Profile() {
               <input
                 type="password"
                 id="new-password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[80%]"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[30vw]"
                 placeholder="Enter new password"
               />
             </div>
@@ -109,13 +220,13 @@ function Profile() {
               <input
                 type="password"
                 id="confirm-password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[80%]"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[30vw]"
                 placeholder="Confirm new password"
               />
             </div>
             <button
               type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700"
             >
               Change password
             </button>

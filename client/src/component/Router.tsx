@@ -42,6 +42,7 @@ const ProtectedRoute = () => {
 
 const AntiProtectedRoute = () => {
   const { token } = useAppSelector((state) => state.user);
+  console.log(token);
 
   if (token) return <Navigate to="/dashboard" />;
   return <Outlet />;

@@ -9,6 +9,12 @@ export interface SignUpType {
   password: string;
 }
 
+export interface ProfileType {
+  name: string;
+  email: string;
+  profilePicture: string;
+}
+
 export interface ShortenUrlData {
   originalUrl: string;
   expirationDate: Date;
@@ -28,7 +34,7 @@ export interface UrlData {
   createdAt: string;
   clickCount: number;
   password?: string;
-};
+}
 
 export interface EditUrlData extends UrlData {
   hasPassword: Boolean;
@@ -39,9 +45,8 @@ export interface EditUrlProps {
   urlData: UrlData;
   editUrl: Boolean;
   setEditUrl: React.Dispatch<React.SetStateAction<Boolean>>;
-  loadDashboard: (showMessage?:Boolean) => Promise<void>;
+  loadDashboard: (showMessage?: Boolean) => Promise<void>;
 }
-
 
 interface User {
   name: string;

@@ -21,10 +21,15 @@ const UserSchema = new mongoose.Schema<IUser>(
       unique: true,
       index: true,
     },
+    profilePicture: {
+      type: String,
+      default: "https://www.gravatar.com/avatar/",
+    },
     password: {
       type: String,
       required: [true, "Please provide password"],
       minLength: [6, "Password must be at least 6 characters"],
+      select: false,
     },
     isAdministrator: {
       type: Boolean,

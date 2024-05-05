@@ -50,13 +50,10 @@ function ShortenUrl({
       return;
     }
     try {
-      await toast.promise(
-        createShortUrl(shortenUrlData),
-        {
-          pending: "Creating short URL...",
-          success: "Short URL created successfully",
-        }
-      );
+      await toast.promise(createShortUrl(shortenUrlData), {
+        pending: "Creating short URL...",
+        success: "Short URL created successfully",
+      });
       loadDashboard();
       setShortenUrlData(initialState);
       setShowShortenUrl(false);
@@ -246,7 +243,7 @@ function ShortenUrl({
                         min={new Date().toISOString().split("T")[0]}
                         max={
                           new Date(
-                            new Date().getTime() + 1000 * 60 * 60 * 24 * 365
+                            new Date().getTime() + 1000 * 60 * 60 * 24 * 365,
                           )
                             .toISOString()
                             .split("T")[0]

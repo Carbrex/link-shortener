@@ -3,6 +3,7 @@ import { LoginState } from "../store/userSlice";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Logo from "../assets/lynk.png";
 import WebpLogo from "../assets/lynk.webp";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const dispatch = useAppDispatch();
@@ -11,21 +12,16 @@ function Navbar() {
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 relative">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto h-20 p-4">
-        <a
-          href="https://flowbite.com/"
+        <Link
+          to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <picture>
-            {/* <img src={WebpLogo} className="h-16" alt="Lynk Logo" />
-            <img src={Logo} className="h-16" alt="Lynk Logo" /> */}
             <source srcSet={WebpLogo} type="image/webp" />
             <source srcSet={Logo} type="image/png" />
             <img src={Logo} className="h-11" alt="Lynk Logo" />
           </picture>
-          {/* <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            Flowbite
-          </span> */}
-        </a>
+        </Link>
         <div className="flex md:hidden">
           <DarkModeButton />
           <button
@@ -79,25 +75,25 @@ function Navbar() {
               </svg>
             </div>
             <li>
-              <a
-                href="#"
+              <Link
+                to="/"
                 className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500"
                 aria-current="page"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                to="/"
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
                 About
-              </a>
+              </Link>
             </li>
             <li>
               <a
-                href="#"
+                href="https://github.com/Carbrex"
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
                 Github
@@ -107,8 +103,8 @@ function Navbar() {
               <DarkModeButton />
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                to="/profile"
                 className="flex gap-4 items-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent h-fit mt-[-0.25rem]"
               >
                 <img
@@ -117,7 +113,7 @@ function Navbar() {
                   alt="image description"
                 />
                 <p className="md:hidden">Profile</p>
-              </a>
+              </Link>
             </li>
             <li>
               <button

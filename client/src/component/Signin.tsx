@@ -15,7 +15,7 @@ function Signin() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(signIn(signInValues));
-  }
+  };
 
   return (
     <section className="bg-white dark:bg-gray-900 min-h-section">
@@ -52,7 +52,9 @@ function Signin() {
             <input
               type="email"
               name="email"
-              onChange={(e) =>{setSignInValues({...signInValues, email: e.target.value})}}
+              onChange={(e) => {
+                setSignInValues({ ...signInValues, email: e.target.value });
+              }}
               className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               placeholder="Email address"
             />
@@ -79,7 +81,9 @@ function Signin() {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              onChange={(e) =>{setSignInValues({...signInValues, password: e.target.value})}}
+              onChange={(e) => {
+                setSignInValues({ ...signInValues, password: e.target.value });
+              }}
               className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               placeholder="Password"
             />
@@ -114,7 +118,8 @@ function Signin() {
             </button>
 
             <div className="mt-2 text-center ">
-              <Link to='/signup'
+              <Link
+                to="/signup"
                 className="text-sm text-blue-500 hover:underline dark:text-blue-400"
               >
                 Don't have an account yet? Sign up

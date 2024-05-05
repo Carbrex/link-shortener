@@ -15,8 +15,9 @@ const initialState: LoginState = {
   loadingUser: true,
   token: localStorage.getItem("token") || "",
   isDarkMode:
-    localStorage.getItem("isDarkMode") === "true" ||
-    window.matchMedia("(prefers-color-scheme: dark)").matches,
+    localStorage.getItem("isDarkMode") !== null
+      ? localStorage.getItem("isDarkMode") === "true"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches,
   name: "",
   isAdministrator: false,
 };
@@ -38,6 +39,10 @@ const userSlice = createSlice({
       console.log(state.token, state.name, state.isAdministrator);
     },
     LOGOUT(state) {
+      console.log("logout");
+      console.log("logout");
+      console.log("logout");
+      console.log("logout");
       localStorage.removeItem("token");
       state.token = "";
       state.name = "";
@@ -104,6 +109,28 @@ export const getUserData = () => async (dispatch: Dispatch) => {
   }
 };
 
-export const { TOGGLE_DARK_MODE, SET_USER_DATA, LOGOUT, SET_LOADING_USER_TRUE, SET_LOADING_USER_FALSE } = userSlice.actions;
+export const logout = () => (dispatch: Dispatch) => {
+  try {
+    console.log("logout2");
+    console.log("logout2");
+    console.log("logout2");
+    console.log("logout2");
+    dispatch(LOGOUT());
+  } catch (error) {
+    console.log("logout3");
+    console.log("logout3");
+    console.log("logout3");
+    console.log("logout3");
+    console.log(error);
+  }
+};
+
+export const {
+  TOGGLE_DARK_MODE,
+  SET_USER_DATA,
+  LOGOUT,
+  SET_LOADING_USER_TRUE,
+  SET_LOADING_USER_FALSE,
+} = userSlice.actions;
 export default userSlice.reducer;
 // export const { setDarkMode } = userSlice.actions;

@@ -4,7 +4,9 @@ function Sidebar() {
   const [isOpen, setIsOpen] = useState<Boolean>(false);
 
   return (
-    <aside className={`flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700`}>
+    <aside
+      className={`flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto bg-white border-r rtl:border-r-0 rtl:border-l dark:bg-gray-900 dark:border-gray-700`}
+    >
       {/* <a href="#">
         <img
           className="w-auto h-6 sm:h-7"

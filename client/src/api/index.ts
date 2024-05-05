@@ -1,6 +1,15 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import { EditUrlData, ShortenUrlData, SignInType, SignUpType, UrlData } from "../types";
+import {
+  EditUrlData,
+  ProfileType,
+  ShortenUrlData,
+  SignInType,
+  SignUpType,
+  UrlData,
+} from "../types";
+import { logout } from "../store/userSlice";
+import store from "../store";
 
 const URL = import.meta.env.PROD ? "/api/v1" : "http://localhost:3000/api/v1";
 
@@ -32,6 +41,9 @@ API.interceptors.response.use(
   },
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
+    if (error.response.status === 401) {
+      logout()(store.dispatch);
+    }
     if (error instanceof Error) {
       console.log(error.message);
     } else console.log(error);
@@ -51,10 +63,20 @@ export const login = (signInData: SignInType) =>
   API.post("/auth/login", signInData);
 export const register = (signUpData: SignUpType) =>
   API.post("/auth/register", signUpData);
+export const getProfile = () => API.get("/auth/profile");
+export const updateProfile = (profileData: ProfileType) =>
+  API.put("/auth/profile", profileData);
+export const uploadProfilePicture = (image: File) => {
+  const formData = new FormData();
+  formData.append("profileImage", image);
+  return API.put("/auth/profile/picture", formData);
+};
 // export const logout = () => API.get("/auth/logout");
 // export const checkAuth = () => API.get("/auth/check");
 
 /* Dashboard API */
 export const getDashboard = () => API.get("/url/all");
-export const createShortUrl = (urlData:ShortenUrlData) => API.post("/url/create", urlData);
-export const editShortUrl = (id: string, urlData:EditUrlData) => API.put(`/url/edit/${id}`, urlData);
+export const createShortUrl = (urlData: ProfileType) =>
+  API.post("/url/create", urlData);
+export const editShortUrl = (id: string, urlData: EditUrlData) =>
+  API.put(`/url/edit/${id}`, urlData);

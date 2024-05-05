@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import "express-async-errors";
 import express, { Express } from "express";
 import morgan from "morgan";
@@ -7,8 +9,6 @@ import morgan from "morgan";
 import cors from "cors";
 import rateLimiter from "express-rate-limit";
 
-import dotenv from "dotenv";
-dotenv.config();
 
 const app: Express = express();
 

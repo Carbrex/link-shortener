@@ -5,6 +5,7 @@ import { MongoServerError } from "mongodb";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail";
+import multer from "multer";
 
 const errorHandlerMiddleware = (
   err:
@@ -74,11 +75,35 @@ const errorHandlerMiddleware = (
     }
   }
 
+  // Multer Error
+  const multerErrorMessages = {
+    LIMIT_PART_COUNT: "Too many parts",
+    LIMIT_FILE_SIZE: "File size is too large. Max limit is 4MB",
+    LIMIT_FILE_COUNT: "Too many files",
+    LIMIT_FIELD_KEY: "Field name is too long",
+    LIMIT_FIELD_VALUE: "Field value is too long",
+    LIMIT_FIELD_COUNT: "Too many fields",
+    LIMIT_UNEXPECTED_FILE:
+      "Unexpected file: Acceptes files are jpg, jpeg, png, webp",
+  };
+  if (err instanceof multer.MulterError) {
+    const errorCode = err.code;
+    const errorMessage =
+      multerErrorMessages[errorCode] || "Unknown Multer error";
+
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      msg: errorMessage,
+    });
+  }
+
   if (err instanceof SyntaxError && err.message.includes("JSON")) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ error: true, msg: "Invalid JSON in request body" });
   }
+
+  console.log(err);
 
   if (
     !(

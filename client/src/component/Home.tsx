@@ -1,62 +1,143 @@
-import React from 'react'
+import { color } from "framer-motion";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAppSelector } from "../hooks";
+import QRCode from "./QRCode";
 
 function Home() {
+  const { name } = useAppSelector((state) => state.user);
   return (
     <>
-    <section class="bg-white dark:bg-gray-900">
-    <nav x-data="{ isOpen: false }" class="container p-6 mx-auto lg:flex lg:justify-between lg:items-center">
-        <div class="flex items-center justify-between">
-            <a href="#">
-                <img class="w-auto h-6 sm:h-7" src="https://merakiui.com/images/full-logo.svg" alt="">
-            </a>
-
-            <!-- Mobile menu button -->
-            <div class="flex lg:hidden">
-                <button x-cloak @click="isOpen = !isOpen" type="button" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400" aria-label="toggle menu">
-                    <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
-                    </svg>
-            
-                    <svg x-show="isOpen" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+      <section className="bg-white dark:bg-gray-900">
+        <div className="container px-6 py-16 mx-auto text-center">
+          <div className="max-w-lg mx-auto">
+            <h1 className="text-3xl font-semibold text-gray-800 dark:text-white lg:text-4xl">
+              {/* #1d84f9 #8fe121 */}
+              <span
+                style={{
+                  background: "linear-gradient(to right, #1d84f9, #8fe121)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Lynk
+              </span>{" "}
+              - URL Shortener
+            </h1>
+            <p className="mt-6 text-gray-500 dark:text-gray-300">
+              Lynk is a URL shortener that allows you to shorten any URL and
+              share it with others. Lynk is fast, secure, and easy to use.
+            </p>
+            <div className="pt-6">
+              {!name ? (
+                <>
+                  <Link
+                    to={"/register"}
+                    className="px-5 py-2 mt-6 text-sm font-medium leading-5 text-center text-white capitalize bg-blue-600 rounded-lg hover:bg-blue-500 lg:mx-0 lg:w-auto"
+                  >
+                    Signup
+                  </Link>
+                  <p className="mt-3 text-sm text-gray-400 ">
+                    It's free and only takes a few seconds.
+                  </p>
+                </>
+              ) : (
+                <Link
+                  to={"/dashboard"}
+                  className="px-5 py-2 mt-6 text-sm font-medium leading-5 text-center text-white capitalize bg-blue-600 rounded-lg hover:bg-blue-500 lg:mx-0 lg:w-auto"
+                >
+                  Dashboard
+                </Link>
+              )}
             </div>
-        </div>
+          </div>
 
-        <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
-        <div x-cloak :class="[isOpen ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']" class="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-white shadow-md lg:bg-transparent lg:dark:bg-transparent lg:shadow-none dark:bg-gray-900 lg:mt-0 lg:p-0 lg:top-0 lg:relative lg:w-auto lg:opacity-100 lg:translate-x-0 lg:flex lg:items-center">
-            <div class="flex flex-col space-y-4 lg:mt-0 lg:flex-row lg:-px-8 lg:space-y-0">
-                <a class="text-gray-700 transition-colors duration-300 transform lg:mx-8 dark:text-gray-200 dark:hover:text-blue-400 hover:text-blue-500" href="#">Home</a>
-                <a class="text-gray-700 transition-colors duration-300 transform lg:mx-8 dark:text-gray-200 dark:hover:text-blue-400 hover:text-blue-500" href="#">Components</a>
-                <a class="text-gray-700 transition-colors duration-300 transform lg:mx-8 dark:text-gray-200 dark:hover:text-blue-400 hover:text-blue-500" href="#">Pricing</a>
-                <a class="text-gray-700 transition-colors duration-300 transform lg:mx-8 dark:text-gray-200 dark:hover:text-blue-400 hover:text-blue-500" href="#">Contact</a>
+          <div className="w-full mt-10">
+            <div className="mb-2 flex justify-between items-center">
+              <label
+                htmlFor="url-shortener"
+                className="text-md font-medium text-gray-900 dark:text-white"
+              >
+                Shorten a long URL
+              </label>
             </div>
-
-            <a class="block px-5 py-2 mt-4 text-sm text-center text-white capitalize bg-blue-600 rounded-lg lg:mt-0 hover:bg-blue-500 lg:w-auto" href="#">
-                Get started
-            </a>
+            <div className="flex items-center">
+              <button className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-white bg-blue-700 dark:bg-blue-600 border hover:bg-blue-800 dark:hover:bg-blue-700 rounded-s-lg border-blue-700 dark:border-blue-600 hover:border-blue-700 dark:hover:border-blue-700">
+                Generate
+              </button>
+              <div className="relative w-full">
+                <input
+                  id="url-shortener"
+                  type="text"
+                  aria-describedby="helper-text-explanation"
+                  className="bg-gray-50 border border-e-0 focus:outline-none border-gray-300 text-gray-500 dark:text-gray-400 text-sm border-s-0 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  placeholder="https://example.com"
+                  // readonly
+                  // disabled
+                />
+              </div>
+              <button
+                data-tooltip-target="tooltip-url-shortener"
+                data-copy-to-clipboard-target="url-shortener"
+                className="flex-shrink-0 z-10 inline-flex items-center py-3 px-4 text-sm font-medium text-center text-gray-500 dark:text-gray-400 hover:text-gray-900 bg-gray-100 border border-gray-300 rounded-e-lg hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600  dark:hover:text-white dark:border-gray-600"
+                type="button"
+              >
+                <span id="default-icon">
+                  <svg
+                    className="w-4 h-4"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 18 20"
+                  >
+                    <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
+                  </svg>
+                </span>
+                <span
+                  id="success-icon"
+                  className="hidden inline-flex items-center"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 16 12"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M1 5.917 5.724 10.5 15 1.5"
+                    />
+                  </svg>
+                </span>
+              </button>
+              <div
+                id="tooltip-url-shortener"
+                role="tooltip"
+                className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+              >
+                <span id="default-tooltip-message">Copy link</span>
+                <span id="success-tooltip-message" className="hidden">
+                  Copied!
+                </span>
+                <div className="tooltip-arrow" data-popper-arrow></div>
+              </div>
+            </div>
+            <p
+              id="helper-text-explanation"
+              className="mt-2 text-sm text-gray-500 dark:text-gray-400"
+            >
+              {/* Make sure that your URL is valid */}
+            </p>
+            <QRCode link="https://google.com"/>
+          </div>
         </div>
-    </nav>
-
-    <div class="container px-6 py-16 mx-auto text-center">
-        <div class="max-w-lg mx-auto">
-            <h1 class="text-3xl font-semibold text-gray-800 dark:text-white lg:text-4xl">Building Your Next App with our Awesome components</h1>
-            <p class="mt-6 text-gray-500 dark:text-gray-300">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero similique
-                obcaecati illum mollitia.</p>
-            <button class="px-5 py-2 mt-6 text-sm font-medium leading-5 text-center text-white capitalize bg-blue-600 rounded-lg hover:bg-blue-500 lg:mx-0 lg:w-auto focus:outline-none">
-                Start 14-Day free trial
-            </button>
-            <p class="mt-3 text-sm text-gray-400 ">No credit card required</p>
-        </div>
-
-        <div class="flex justify-center mt-10">
-            <img class="object-cover w-full h-96 rounded-xl lg:w-4/5" src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1632&q=80" />
-        </div>
-    </div>
-</section>
-</>
-  )
+      </section>
+    </>
+  );
 }
 
-export default Home
+export default Home;

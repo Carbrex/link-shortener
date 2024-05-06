@@ -8,7 +8,7 @@ export interface LoginState {
   token?: string;
   isDarkMode: Boolean;
   name?: string;
-  profilePicture: string;
+  profilePicture?: string;
   isAdministrator?: Boolean;
 }
 

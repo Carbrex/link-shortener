@@ -7,9 +7,10 @@ import {
 import Url from "../models/Url";
 import User from "../models/User";
 import sendMail from "../utils/sendMail";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import mongoose, { SortOrder, mongo } from "mongoose";
 import { IUrl, IUser } from "../types/models";
+import auth from "../middleware/authentication";
 
 const convertToObjectId = (id: string) => {
   try {
@@ -116,14 +117,12 @@ const redirectUrl = async (req: Request, res: Response) => {
     url.clickCount++;
   }
   await url.save();
-  res.redirect(url.originalUrl);
+  res
+    .status(StatusCodes.OK)
+    .json({ originalUrl: url.originalUrl, msg: "Redirecting to original url" });
 };
 
 const createLink = async (req: Request, res: Response) => {
-  // wait 2 seconds
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  console.log(req.body);
-
   let originalUrl: string = req.body.originalUrl;
   const expirationDate: string = req.body.expirationDate;
   const hasExpiration: Boolean = req.body.hasExpirationDate === true;
@@ -195,6 +194,52 @@ const createLink = async (req: Request, res: Response) => {
     .json({ url, msg: "Link successfully created" });
 };
 
+const createLinkWithoutLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  // check if there is token in the header
+  const token = req.headers.authorization?.split(" ")[1];
+  if (token) {
+    next();
+  }
+  let originalUrl: string = req.body.originalUrl;
+  if (!originalUrl) {
+    throw new BadRequestError("Original Url is required");
+  }
+  if (!originalUrl.startsWith("http") && !originalUrl.startsWith("https")) {
+    originalUrl = `http://${originalUrl}`;
+  }
+  try {
+    new URL(originalUrl);
+  } catch (error) {
+    throw new BadRequestError("Please provide a valid URL to shorten");
+  }
+  let shortUrl: string = Math.random().toString(36).substring(2, 8);
+  let tempUser = await User.findOne({ email: "temp@lynk.com" });
+  if (!tempUser) {
+    const user = await User.create({
+      email: "temp@lynk.com",
+      password: Math.random().toString(36).substring(2, 16),
+      name: "Temporary User",
+    });
+    tempUser = user;
+  }
+  const urlData: IUrl = {
+    originalUrl,
+    shortUrl,
+    hasExpirationDate: true,
+    expirationDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days - thala for a reason
+    createdBy: tempUser._id,
+  };
+
+  const url = await Url.create(urlData);
+  res
+    .status(StatusCodes.CREATED)
+    .json({ url, msg: "Link successfully created" });
+};
+
 const deleteLink = async (req: Request, res: Response) => {
   const linkId = convertToObjectId(req.params.id);
   const userId = req.user.userId;
@@ -253,6 +298,7 @@ export {
   editLink,
   redirectUrl,
   createLink,
+  createLinkWithoutLogin,
   deleteLink,
   reportLink,
   deleteAllLinks,

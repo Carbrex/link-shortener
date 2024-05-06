@@ -14,6 +14,8 @@ import Profile from "./Profile";
 import Signin from "./Signin";
 import Signup from "./Signup";
 import Home from "./Home";
+import Footer from "./Footer";
+import ErrorAndRedirect from "./ErrorAndRedirect";
 
 const Layout = () => {
   const location = useLocation();
@@ -24,13 +26,19 @@ const Layout = () => {
     "/verify",
     "/forgot-password",
   ];
+  const dontHideFooter = ["/signin", "/signup", "/"];
+  const notHideFooter = dontHideFooter.includes(location.pathname);
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
   return (
+    // <div className={`${shouldHideNavbar ? "min-h-screen" : "min-h-section"} `}>
     <div>
       {!shouldHideNavbar && <Navbar />}
-      <div className={`${shouldHideNavbar ? 'min-h-screen' : 'min-h-section' } w-full flex justify-center bg-white dark:bg-gray-900 dark:text-white`}>
+      <div
+        className={`${shouldHideNavbar ? "min-h-screen" : (notHideFooter ? "min-h-section-with-footer" : "min-h-section")} w-full flex justify-center bg-white dark:bg-gray-900 dark:text-white`}
+      >
         <Outlet />
       </div>
+      {notHideFooter && <Footer />}
     </div>
   );
 };
@@ -87,10 +95,10 @@ const router = createBrowserRouter([
           },
         ],
       },
-      // {
-      //   path: "/*",
-      //   element: <ErrorPage />,
-      // },
+      {
+        path: "/*",
+        element: <ErrorAndRedirect />,
+      },
     ],
   },
 ]);

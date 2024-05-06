@@ -83,14 +83,16 @@ function Navbar() {
                 Home
               </Link>
             </li>
-            <li>
-              <Link
-                to="/"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                About
-              </Link>
-            </li>
+            {name && (
+              <li>
+                <Link
+                  to="/dashboard"
+                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                >
+                  Dashboard
+                </Link>
+              </li>
+            )}
             <li>
               <a
                 href="https://github.com/Carbrex"
@@ -103,6 +105,16 @@ function Navbar() {
             <li className="hidden md:block mt-[-0.45rem]">
               <DarkModeButton />
             </li>
+            {!name && (
+              <li>
+                <Link
+                  to="/signin"
+                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                >
+                  Sign In
+                </Link>
+              </li>
+            )}
             <li>
               <Link
                 to="/profile"
@@ -110,20 +122,24 @@ function Navbar() {
               >
                 <img
                   className="rounded-full w-8 h-8"
-                  src={profilePicture||`https://ui-avatars.com/api/?name=${name}`}
+                  src={
+                    profilePicture || `https://ui-avatars.com/api/?name=${name}`
+                  }
                   alt="image description"
                 />
                 <p className="md:hidden">Profile</p>
               </Link>
             </li>
-            <li>
-              <button
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                onClick={() => dispatch({ type: "user/LOGOUT" })}
+            {name && (
+              <li>
+                <button
+                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  onClick={() => dispatch({ type: "user/LOGOUT" })}
                 >
-                Logout
-              </button>
-            </li>
+                  Logout
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>

@@ -85,3 +85,7 @@ export const createShortUrl = (urlData: ShortenUrlType) =>
   API.post("/url/create", urlData);
 export const editShortUrl = (id: string, urlData: EditUrlData) =>
   API.put(`/url/edit/${id}`, urlData);
+
+/* URL API */
+export const shortenWithoutLogin = (originalUrl:string) => API.post("/url/create-without-login", {originalUrl});
+export const redirectUrl = (shortUrl: string) => API.get(`/url/${shortUrl}`);

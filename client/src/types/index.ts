@@ -45,11 +45,15 @@ export interface EditUrlProps {
   urlData: UrlData;
   editUrl: Boolean;
   setEditUrl: React.Dispatch<React.SetStateAction<Boolean>>;
-  loadDashboard: (showMessage?: Boolean) => Promise<void>;
+  loadDashboard: (showMessage?: boolean) => Promise<void>;
 }
 
-interface User {
-  name: string;
-  email: string;
-  isAdministrator: string;
+export interface ShortenUrlType {
+  originalUrl: string;
+  expirationDate: Date;
+  hasExpirationDate: Boolean;
+  shortUrl: string;
+  autoShorten: Boolean;
+  hasPassword: Boolean;
+  password: string;
 }

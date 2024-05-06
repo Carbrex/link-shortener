@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getProfile, updateProfile, uploadProfilePicture } from "../api";
+import { changePassword, getProfile, updateProfile, uploadProfilePicture } from "../api";
 import Loading from "./Loading";
 import { ProfileType } from "../types";
 import { toast } from "react-toastify";
+import { useAppDispatch } from "../hooks";
 
 function Profile() {
   const [profile, setProfile] = useState<ProfileType>({
@@ -18,6 +19,13 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [image, setImage] = useState<File | null>(null);
   const [edit, setEdit] = useState(false);
+  const [passwordChange, setPasswordChange] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const dispatch = useAppDispatch();
 
   const profileUpdateHandler = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -39,15 +47,42 @@ function Profile() {
       return;
     }
     toast.loading("Uploading Image...", { toastId: "uploading-profile-image" });
-    uploadProfilePicture(image).then((data: any) => {
-      setProfile(data.user);
-      setEditProfileData(data.user);
-      setEdit(false);
-    }).finally(() => {
-      setImage(null);
-      toast.done("uploading-profile-image");
-    });
+    uploadProfilePicture(image)
+      .then((data: any) => {
+        setProfile(data.user);
+        setEditProfileData(data.user);
+        dispatch({
+          type: "user/SET_PROFILE_PICTURE",
+          payload: data.user.profilePicture,
+        });
+        setEdit(false);
+      })
+      .finally(() => {
+        setImage(null);
+        toast.done("uploading-profile-image");
+      });
   };
+
+  const passwordChangeHandler = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    if (passwordChange.newPassword !== passwordChange.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    changePassword({
+      currentPassword: passwordChange.currentPassword,
+      newPassword: passwordChange.newPassword,
+    }).then((data: any) => {
+      toast.success("Password changed successfully");
+      setPasswordChange({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    });
+  }
 
   useEffect(() => {
     getProfile().then((data: any) => {
@@ -194,6 +229,13 @@ function Profile() {
                 id="current-password"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[30vw]"
                 placeholder="Enter current password"
+                value={passwordChange.currentPassword}
+                onChange={(e) =>
+                  setPasswordChange({
+                    ...passwordChange,
+                    currentPassword: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="mb-5">
@@ -208,6 +250,13 @@ function Profile() {
                 id="new-password"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[30vw]"
                 placeholder="Enter new password"
+                value={passwordChange.newPassword}
+                onChange={(e) =>
+                  setPasswordChange({
+                    ...passwordChange,
+                    newPassword: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="mb-5">
@@ -222,11 +271,18 @@ function Profile() {
                 id="confirm-password"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-[30rem] max-w-[30vw]"
                 placeholder="Confirm new password"
+                value={passwordChange.confirmPassword}
+                onChange={(e) =>
+                  setPasswordChange({
+                    ...passwordChange,
+                    confirmPassword: e.target.value,
+                  })
+                }
               />
             </div>
             <button
-              type="submit"
               className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700"
+              onClick={passwordChangeHandler}
             >
               Change password
             </button>

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { LoginState } from "../store/userSlice";
+import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Logo from "../assets/lynk.png";
 import WebpLogo from "../assets/lynk.webp";
 import { Link } from "react-router-dom";
 
 function Navbar() {
+  const { name, profilePicture } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -94,6 +94,7 @@ function Navbar() {
             <li>
               <a
                 href="https://github.com/Carbrex"
+                target="_blank"
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
               >
                 Github
@@ -109,7 +110,7 @@ function Navbar() {
               >
                 <img
                   className="rounded-full w-8 h-8"
-                  src="https://ui-avatars.com/api/?name=apple"
+                  src={profilePicture||`https://ui-avatars.com/api/?name=${name}`}
                   alt="image description"
                 />
                 <p className="md:hidden">Profile</p>
@@ -119,7 +120,7 @@ function Navbar() {
               <button
                 className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                 onClick={() => dispatch({ type: "user/LOGOUT" })}
-              >
+                >
                 Logout
               </button>
             </li>

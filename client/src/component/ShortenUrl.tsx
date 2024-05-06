@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { createShortUrl } from "../api";
 
@@ -23,8 +23,8 @@ function ShortenUrl({
   setShowShortenUrl,
   loadDashboard,
 }: ShortenUrlProps) {
-  const [shortenUrlData, setShortenUrlData] = React.useState(initialState);
-  const [alreadyShortening, setAlreadyShortening] = React.useState(false);
+  const [shortenUrlData, setShortenUrlData] = useState(initialState);
+  const [alreadyShortening, setAlreadyShortening] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

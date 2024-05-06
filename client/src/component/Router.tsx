@@ -13,12 +13,14 @@ import Dashboard from "./Dashboard";
 import Profile from "./Profile";
 import Signin from "./Signin";
 import Signup from "./Signup";
+import Home from "./Home";
 
 const Layout = () => {
   const location = useLocation();
   const hideNavbarRoutes = [
     // "/signin",
     // "/signup",
+    // "/",
     "/verify",
     "/forgot-password",
   ];
@@ -26,7 +28,7 @@ const Layout = () => {
   return (
     <div>
       {!shouldHideNavbar && <Navbar />}
-      <div className="min-h-section w-full flex justify-center bg-white dark:bg-gray-900 dark:text-white">
+      <div className={`${shouldHideNavbar ? 'min-h-screen' : 'min-h-section' } w-full flex justify-center bg-white dark:bg-gray-900 dark:text-white`}>
         <Outlet />
       </div>
     </div>
@@ -55,12 +57,12 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/",
         element: <ProtectedRoute />,
         children: [
-          {
-            path: "/",
-            element: <Dashboard />,
-          },
           {
             path: "dashboard",
             element: <Dashboard />,

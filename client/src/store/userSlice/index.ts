@@ -8,6 +8,7 @@ export interface LoginState {
   token?: string;
   isDarkMode: Boolean;
   name?: string;
+  profilePicture: string;
   isAdministrator?: Boolean;
 }
 
@@ -19,6 +20,7 @@ const initialState: LoginState = {
       ? localStorage.getItem("isDarkMode") === "true"
       : window.matchMedia("(prefers-color-scheme: dark)").matches,
   name: "",
+  profilePicture: "",
   isAdministrator: false,
 };
 
@@ -31,18 +33,19 @@ const userSlice = createSlice({
       localStorage.setItem("isDarkMode", state.isDarkMode.toString());
     },
     SET_USER_DATA(state, action) {
-      const { token, name, isAdministrator } = action.payload;
+      const { token, name, isAdministrator, profilePicture } = action.payload;
+      console.log(token, name, isAdministrator,profilePicture);
       localStorage.setItem("token", token);
       state.token = token;
       state.name = name;
       state.isAdministrator = isAdministrator;
+      state.profilePicture = profilePicture;
       console.log(state.token, state.name, state.isAdministrator);
     },
+    SET_PROFILE_PICTURE(state, action) {
+      state.profilePicture = action.payload;
+    },
     LOGOUT(state) {
-      console.log("logout");
-      console.log("logout");
-      console.log("logout");
-      console.log("logout");
       localStorage.removeItem("token");
       state.token = "";
       state.name = "";
@@ -111,16 +114,8 @@ export const getUserData = () => async (dispatch: Dispatch) => {
 
 export const logout = () => (dispatch: Dispatch) => {
   try {
-    console.log("logout2");
-    console.log("logout2");
-    console.log("logout2");
-    console.log("logout2");
     dispatch(LOGOUT());
   } catch (error) {
-    console.log("logout3");
-    console.log("logout3");
-    console.log("logout3");
-    console.log("logout3");
     console.log(error);
   }
 };
@@ -129,6 +124,7 @@ export const {
   TOGGLE_DARK_MODE,
   SET_USER_DATA,
   LOGOUT,
+  SET_PROFILE_PICTURE,
   SET_LOADING_USER_TRUE,
   SET_LOADING_USER_FALSE,
 } = userSlice.actions;

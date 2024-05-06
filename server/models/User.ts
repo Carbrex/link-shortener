@@ -23,13 +23,12 @@ const UserSchema = new mongoose.Schema<IUser>(
     },
     profilePicture: {
       type: String,
-      default: "https://www.gravatar.com/avatar/",
+      //based on name "https://ui-avatars.com/api/?name={name}"
     },
     password: {
       type: String,
       required: [true, "Please provide password"],
       minLength: [6, "Password must be at least 6 characters"],
-      select: false,
     },
     isAdministrator: {
       type: Boolean,
@@ -44,6 +43,10 @@ const UserSchema = new mongoose.Schema<IUser>(
 );
 
 const preSave = async function (this: any, next: (err?: Error) => void) {
+  if (this.profilePicture === undefined) {
+    this.profilePicture = `https://ui-avatars.com/api/?name=${this.name}`;
+  }
+  
   if (!this.isModified("password")) {
     return next();
   }

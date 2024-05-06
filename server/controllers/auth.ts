@@ -14,6 +14,7 @@ const register = async (req: Request, res: Response) => {
   res.status(StatusCodes.CREATED).json({
     name: user.name,
     isAdministrator: user.isAdministrator ?? false,
+    profilePicture: user.profilePicture,
     token,
     msg: "Registration successful",
   });
@@ -33,11 +34,12 @@ const login = async (req: Request, res: Response) => {
   if (!isPasswordCorrect) {
     throw new UnauthenticatedError("Invalid Credentials");
   }
-  console.log(user);
+  
   const token = user.createJWT();
   res.status(StatusCodes.OK).json({
     name: user.name,
     isAdministrator: user.isAdministrator ?? false,
+    profilePicture: user.profilePicture,
     token,
     msg: "Login successful",
   });
@@ -55,6 +57,7 @@ const sendDetails = async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({
     name: user.name,
     isAdministrator: user.isAdministrator ?? false,
+    profilePicture: user.profilePicture,
     token,
     msg: "User details sent",
   });
@@ -91,6 +94,28 @@ const updateProfile = async (req: Request, res: Response) => {
   });
 };
 
+const passwordChange = async (req: Request, res: Response) => {
+  const userId = req.user.userId;
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new UnauthenticatedError("Unauthorized");
+  }
+  console.log(req.body, user);
+  const { currentPassword, newPassword } = req.body;
+  const isPasswordCorrect = await user.comparePassword(currentPassword);
+  if (!isPasswordCorrect) {
+    throw new BadRequestError("Invalid current password");
+  }
+  console.log("Password is correct");
+  user.password = newPassword;
+  console.log("Password is saved");
+  await user.save();
+  console.log("Password is saved2");
+  res.status(StatusCodes.OK).json({
+    msg: "Password changed successfully",
+  });
+}
+
 const uploadProfilePicture = async (req: Request, res: Response) => {
   const userId = req.user.userId;
   const user = await User.findById(userId);
@@ -112,6 +137,7 @@ export {
   login,
   sendDetails,
   profile,
+  passwordChange,
   updateProfile,
   uploadProfilePicture,
 };

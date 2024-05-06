@@ -226,7 +226,7 @@ function EditUrl({
                           hasPassword: e.target.checked,
                         }));
                       }}
-                      checked={shortenUrlData.hasPassword}
+                      checked={shortenUrlData.hasPassword as boolean}
                     />
                   </div>
 

@@ -4,6 +4,7 @@ import {
   EditUrlData,
   ProfileType,
   ShortenUrlData,
+  ShortenUrlType,
   SignInType,
   SignUpType,
   UrlData,
@@ -71,12 +72,16 @@ export const uploadProfilePicture = (image: File) => {
   formData.append("profileImage", image);
   return API.put("/auth/profile/picture", formData);
 };
+export const changePassword = (passwordData: {
+  currentPassword: string;
+  newPassword: string;
+}) => API.put("/auth/password", passwordData);
 // export const logout = () => API.get("/auth/logout");
 // export const checkAuth = () => API.get("/auth/check");
 
 /* Dashboard API */
 export const getDashboard = () => API.get("/url/all");
-export const createShortUrl = (urlData: ProfileType) =>
+export const createShortUrl = (urlData: ShortenUrlType) =>
   API.post("/url/create", urlData);
 export const editShortUrl = (id: string, urlData: EditUrlData) =>
   API.put(`/url/edit/${id}`, urlData);

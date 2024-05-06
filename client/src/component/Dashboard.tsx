@@ -187,7 +187,7 @@ function Dashboard() {
           editUrl={editUrl}
           setEditUrl={setEditUrl}
           loadDashboard={loadDashboard}
-          urlData={getUrlData(editItemId)}
+          urlData={getUrlData(editItemId) as UrlData}
         />
       )}
       {showShortenUrl && (

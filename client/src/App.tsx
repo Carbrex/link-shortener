@@ -53,8 +53,6 @@ function App() {
           theme={isDarkMode ? "dark" : "light"}
         />
         <RouterProvider router={router} />
-        {/* <button onClick={() => toast.success("hi")}>toastify</button> */}
-        {/* <h1 className="text-3xl font-bold underline">Hello world!</h1> */}
       </div>
     </>
   );

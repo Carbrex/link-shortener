@@ -1,8 +1,5 @@
-import { useEffect } from "react";
 import {
   Outlet,
-  RouterProvider,
-  ScrollRestoration,
   createBrowserRouter,
   useLocation,
   Navigate,
@@ -16,6 +13,7 @@ import Signup from "./Signup";
 import Home from "./Home";
 import Footer from "./Footer";
 import ErrorAndRedirect from "./ErrorAndRedirect";
+import ReportLink from "./ReportLink";
 
 const Layout = () => {
   const location = useLocation();
@@ -34,7 +32,7 @@ const Layout = () => {
     <div>
       {!shouldHideNavbar && <Navbar />}
       <div
-        className={`${shouldHideNavbar ? "min-h-screen" : (notHideFooter ? "min-h-section-with-footer" : "min-h-section")} w-full flex justify-center bg-white dark:bg-gray-900 dark:text-white`}
+        className={`${shouldHideNavbar ? "min-h-screen" : notHideFooter ? "min-h-section-with-footer" : "min-h-section"} w-full flex justify-center bg-white dark:bg-gray-900 dark:text-white`}
       >
         <Outlet />
       </div>
@@ -78,6 +76,10 @@ const router = createBrowserRouter([
           {
             path: "profile",
             element: <Profile />,
+          },
+          {
+            path: "report",
+            element: <ReportLink />,
           },
         ],
       },

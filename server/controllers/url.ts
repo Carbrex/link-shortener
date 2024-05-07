@@ -29,8 +29,6 @@ const getAllLinks = async (req: Request, res: Response) => {
     "updatedAt",
     "expirationDate",
   ];
-  // wait 2 seconds
-  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   const getExpiredAlso = req.query.expired as string;
   const expired = getExpiredAlso === "true";
@@ -68,11 +66,14 @@ const getAllLinks = async (req: Request, res: Response) => {
     };
   }
 
-  const links = await Url.find(query).sort(sortObject);
-
+  const links = await Url.find(query)
+    .sort(sortObject)
+    .skip(req.pagination.skip)
+    .limit(req.pagination.limit);
+  const totalCount = await Url.countDocuments(query);
   res
     .status(StatusCodes.OK)
-    .json({ count: links.length, links, msg: "Links successfully fetched" });
+    .json({ count: totalCount, links, msg: "Links successfully fetched" });
 };
 
 // not checked with postman
@@ -108,18 +109,40 @@ const editLink = async (req: Request, res: Response) => {
 
 const redirectUrl = async (req: Request, res: Response) => {
   const { shortUrl } = req.params;
-
+  const password = req.query.password as string;
+  // console.log(password);
   const url = await Url.findOne({ shortUrl });
   if (!url) {
     throw new NotFoundError(`No url with short url ${shortUrl}`);
+  }
+  if (
+    url.hasExpirationDate &&
+    url.expirationDate &&
+    url.expirationDate < new Date()
+  ) {
+    throw new BadRequestError("This link has expired");
+  }
+  if (url.password) {
+    if (password && password !== url.password) {
+      return res.status(StatusCodes.OK).json({
+        needPassword: true,
+        msg: "Incorrect password",
+      });
+    }
+    if (!password)
+      return res
+        .status(StatusCodes.OK)
+        .json({ needPassword: true, msg: "This link is password protected" });
   }
   if (url.clickCount !== undefined) {
     url.clickCount++;
   }
   await url.save();
-  res
-    .status(StatusCodes.OK)
-    .json({ originalUrl: url.originalUrl, msg: "Redirecting to original url" });
+  res.status(StatusCodes.OK).json({
+    originalUrl: url.originalUrl,
+    needPassword: false,
+    msg: "Redirecting to original url",
+  });
 };
 
 const createLink = async (req: Request, res: Response) => {

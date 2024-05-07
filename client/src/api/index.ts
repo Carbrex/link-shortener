@@ -20,7 +20,7 @@ API.interceptors.request.use(
   function (config) {
     const token = localStorage.getItem("token") || "";
 
-    console.log(token);
+    // console.log(token);
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
@@ -31,18 +31,19 @@ API.interceptors.request.use(
 
 API.interceptors.response.use(
   function (response) {
-    console.log(response);
+    // console.log(response);
     if (!response.data.error) {
       return response.data;
     } else {
-      console.log(response.data.msg);
+      // console.log(response.data.msg);
       toast.error(response.data.msg);
       return Promise.reject(response.data);
     }
   },
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
-    if (error.response.status === 401) {
+    // console.log(error);
+    if (error.response && error.response.status === 401) {
       logout()(store.dispatch);
     }
     if (error instanceof Error) {
@@ -80,12 +81,23 @@ export const changePassword = (passwordData: {
 // export const checkAuth = () => API.get("/auth/check");
 
 /* Dashboard API */
-export const getDashboard = () => API.get("/url/all");
+export const getDashboard = (
+  page: number,
+  limit: number,
+  sortField: string,
+  sortOrder: string,
+  expired: Boolean
+) =>
+  API.get(
+    `/url/all?page=${page}&limit=${limit}&sort=${sortField}&order=${sortOrder}&expired=${expired}`
+  );
 export const createShortUrl = (urlData: ShortenUrlType) =>
   API.post("/url/create", urlData);
 export const editShortUrl = (id: string, urlData: EditUrlData) =>
   API.put(`/url/edit/${id}`, urlData);
+export const deleteShortUrl = (id: string) => API.delete(`/url/delete/${id}`);
 
 /* URL API */
-export const shortenWithoutLogin = (originalUrl:string) => API.post("/url/create-without-login", {originalUrl});
-export const redirectUrl = (shortUrl: string) => API.get(`/url/${shortUrl}`);
+export const shortenWithoutLogin = (originalUrl: string) =>
+  API.post("/url/create-without-login", { originalUrl });
+export const redirectUrl = (shortUrl: string,password: string) => API.get(`/url/${shortUrl}?password=${password}`);

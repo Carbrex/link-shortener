@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Logo from "../assets/lynk.png";
 import WebpLogo from "../assets/lynk.webp";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 function Navbar() {
   const { name, profilePicture } = useAppSelector((state) => state.user);
@@ -12,8 +12,8 @@ function Navbar() {
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 relative">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto h-20 p-4">
-        <Link
-          to="/"
+        <NavLink
+          to="/" 
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <picture>
@@ -21,7 +21,7 @@ function Navbar() {
             <source srcSet={Logo} type="image/png" />
             <img src={Logo} className="h-11" alt="Lynk Logo" />
           </picture>
-        </Link>
+        </NavLink>
         <div className="flex md:hidden">
           <DarkModeButton />
           <button
@@ -54,7 +54,7 @@ function Navbar() {
           className={`${isOpen ? "absolute top-0 right-0 w-96 max-w-full" : "hidden"} md:static md:h-auto w-full md:block md:w-auto z-10`}
           id="navbar-default"
         >
-          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-400 rounded-lg bg-gray-200 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <div
               className={`${isOpen ? "" : "hidden"} md:hidden w-full flex justify-center h-10 `}
             >
@@ -75,22 +75,22 @@ function Navbar() {
               </svg>
             </div>
             <li>
-              <Link
+              <NavLink
                 to="/"
-                className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500"
+                className={({isActive})=>`block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent ${isActive?'dark:text-blue-500  text-blue-700':'text-gray-900 dark:text-white'}`}
                 aria-current="page"
               >
                 Home
-              </Link>
+              </NavLink>
             </li>
             {name && (
               <li>
-                <Link
+                <NavLink
                   to="/dashboard"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  className={({isActive})=>`block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent ${isActive?'dark:text-blue-500  text-blue-700':'text-gray-900 dark:text-white'}`}
                 >
                   Dashboard
-                </Link>
+                </NavLink>
               </li>
             )}
             <li>
@@ -127,18 +127,18 @@ function Navbar() {
             </li>
             {!name && (
               <li>
-                <Link
+                <NavLink
                   to="/signin"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  className={({isActive})=>`block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent ${isActive?'dark:text-blue-500  text-blue-700':'text-gray-900 dark:text-white'}`}
                 >
                   Sign In
-                </Link>
+                </NavLink>
               </li>
             )}
             <li>
-              <Link
+              <NavLink
                 to="/profile"
-                className="flex gap-4 items-center py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent h-fit mt-[-0.25rem]"
+                className={({isActive})=>`flex gap-2 items-center py-2 px-3  rounded hover:bg-gray-100 md:hover:bg-transparent  md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent h-fit mt-[-0.25rem] ${isActive?'dark:text-blue-500  text-blue-700':'text-gray-900 dark:text-white'}`}
               >
                 <img
                   className="rounded-full w-8 h-8"
@@ -147,8 +147,8 @@ function Navbar() {
                   }
                   alt="image description"
                 />
-                <p className="md:hidden">Profile</p>
-              </Link>
+                <p className="">Profile</p>
+              </NavLink>
             </li>
             {name && (
               <li>

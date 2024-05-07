@@ -17,6 +17,10 @@ function ReportLink() {
             <button className="btn">Report</button>
           </form>
         </div>
+        {/* Report abuse
+
+If you believe a link violates our terms of service, please report it below. We will review the link and take appropriate action. Thank you for helping us keep Reduced.to safe. */}
+
         
     </>
   )

@@ -16,11 +16,24 @@ function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [maxValue, setMaxValue] = useState(0);
+  const [sortField, setSortField] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [firstLoad, setFirstLoad] = useState<Boolean>(true);
+  const [showExpired, setShowExpired] = useState<Boolean>(false);
 
   const loadDashboard = async (showMessage: boolean = false): Promise<void> => {
-    setLoading(true);
+    if (firstLoad) {
+      setFirstLoad(false);
+      setLoading(true);
+    }
     try {
-      const dataPromise = getDashboard();
+      const dataPromise = getDashboard(
+        currentPage,
+        perPage,
+        sortField,
+        sortOrder,
+        showExpired
+      );
       if (showMessage) {
         toast.promise(dataPromise, {
           pending: "Loading Dashboard...",
@@ -45,13 +58,18 @@ function Dashboard() {
     return tableData.find((data) => data._id === id);
   };
 
+  const handleSort = (field: string) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
+
   useEffect(() => {
     loadDashboard();
-  }, []);
-
-  // if (loading) {
-  //   return <Loading />;
-  // }
+  }, [currentPage, perPage, sortField, sortOrder, showExpired]);
 
   return (
     <div>
@@ -82,25 +100,84 @@ function Dashboard() {
           </svg>
         </button>
       </div>
+      <div>
+        <label className="flex items-center gap-2 m-2">
+          <input
+            type="checkbox"
+            className="form-checkbox"
+            checked={showExpired as boolean}
+            onChange={() => {
+              setShowExpired((prev: Boolean) => !prev);
+              setCurrentPage(1);
+            }}
+          />
+          <span>Show expired also</span>
+        </label>
+      </div>
 
       <div className="relative overflow-x-auto shadow-md rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-6 py-3">
-                Short URL
+              <th
+                scope="col"
+                className="px-6 py-3"
+                onClick={() => handleSort("shortUrl")}
+              >
+                <p className="flex items-center gap-1">
+                  Short URL
+                  {sortField === "shortUrl" && (
+                    <SortArrow sortOrder={sortOrder} />
+                  )}
+                </p>
               </th>
-              <th scope="col" className="px-6 py-3 hidden sm:table-cell">
-                Original URL
+              <th
+                scope="col"
+                className="px-6 py-3 hidden sm:table-cell"
+                onClick={() => handleSort("originalUrl")}
+              >
+                <p className="flex items-center gap-1">
+                  Original URL
+                  {sortField === "originalUrl" && (
+                    <SortArrow sortOrder={sortOrder} />
+                  )}
+                </p>
               </th>
-              <th scope="col" className="px-6 py-3 hidden xs:table-cell">
-                Clicks
+              <th
+                scope="col"
+                className="px-6 py-3 hidden xs:table-cell"
+                onClick={() => handleSort("clickCount")}
+              >
+                <p className="flex items-center gap-1">
+                  Clicks
+                  {sortField === "clickCount" && (
+                    <SortArrow sortOrder={sortOrder} />
+                  )}
+                </p>
               </th>
-              <th scope="col" className="px-6 py-3 hidden lg:table-cell">
-                Created At
+              <th
+                scope="col"
+                className="px-6 py-3 hidden lg:table-cell"
+                onClick={() => handleSort("createdAt")}
+              >
+                <p className="flex items-center gap-1">
+                  Created At
+                  {sortField === "createdAt" && (
+                    <SortArrow sortOrder={sortOrder} />
+                  )}
+                </p>
               </th>
-              <th scope="col" className="px-6 py-3 hidden md:table-cell">
-                Expires
+              <th
+                scope="col"
+                className="px-6 py-3 hidden md:table-cell"
+                onClick={() => handleSort("expirationDate")}
+              >
+                <p className="flex items-center gap-1">
+                  Expires
+                  {sortField === "expirationDate" && (
+                    <SortArrow sortOrder={sortOrder} />
+                  )}
+                </p>
               </th>
               <th scope="col" className="px-6 py-3">
                 Actions
@@ -201,6 +278,7 @@ function Dashboard() {
         <Pagination
           maxValue={maxValue}
           currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
           perPage={perPage}
         />
       </div>
@@ -209,3 +287,22 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
+const SortArrow = ({ sortOrder }: { sortOrder: string }) => {
+  return (
+    <svg
+      className={`w-4 h-4 ${sortOrder === "asc" ? "" : "transform rotate-180"}`}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M5 15l7-7 7 7"
+      ></path>
+    </svg>
+  );
+};

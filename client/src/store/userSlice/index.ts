@@ -34,13 +34,13 @@ const userSlice = createSlice({
     },
     SET_USER_DATA(state, action) {
       const { token, name, isAdministrator, profilePicture } = action.payload;
-      console.log(token, name, isAdministrator,profilePicture);
+      // console.log(token, name, isAdministrator,profilePicture);
       localStorage.setItem("token", token);
       state.token = token;
       state.name = name;
       state.isAdministrator = isAdministrator;
       state.profilePicture = profilePicture;
-      console.log(state.token, state.name, state.isAdministrator);
+      // console.log(state.token, state.name, state.isAdministrator);
     },
     SET_PROFILE_PICTURE(state, action) {
       state.profilePicture = action.payload;

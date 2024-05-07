@@ -12,8 +12,9 @@ import {
   reportLink,
   deleteAllLinks,
 } from "../controllers/url";
+import paginate from "../middleware/paginator";
 
-router.get("/all", authMiddleWare, getAllLinks);
+router.get("/all", authMiddleWare, paginate, getAllLinks);
 router.post("/create", authMiddleWare, createLink);
 // a route that creates a short URL with or without login
 router.post("/create-without-login", createLinkWithoutLogin, authMiddleWare, createLink);

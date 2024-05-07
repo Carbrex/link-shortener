@@ -3,10 +3,11 @@ import React, { useEffect } from "react";
 interface PaginationProps {
   maxValue: number;
   currentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   perPage?: number;
 }
 
-function Pagination({ maxValue, currentPage, perPage = 10 }: PaginationProps) {
+function Pagination({ maxValue, currentPage, setCurrentPage, perPage = 10 }: PaginationProps) {
   const totalPages = Math.ceil(maxValue / perPage);
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   // keep only 5 pages in view
@@ -20,14 +21,33 @@ function Pagination({ maxValue, currentPage, perPage = 10 }: PaginationProps) {
       pages.splice(5);
     }
   }
+
+  const handlePrevious = () => {
+    console.log(currentPage);
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  }
+  const handleNext = () => {
+    console.log(currentPage);
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  }
+  
+  const handlePage = (page: number) => {
+    console.log(currentPage);
+    setCurrentPage(page);
+  }
+  
   return (
     <>
       <div aria-label="Page navigation example" className="sm:hidden">
         <ul className="flex items-center -space-x-px h-8 text-sm">
           <li>
-            <a
-              href="#"
+            <button
               className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              onClick={handlePrevious}
             >
               <span className="sr-only">Previous</span>
               <svg
@@ -45,21 +65,21 @@ function Pagination({ maxValue, currentPage, perPage = 10 }: PaginationProps) {
                   d="M5 1 1 5l4 4"
                 />
               </svg>
-            </a>
+            </button>
           </li>
           {pages.map((page, index) => (
             <li key={index}>
-              <a
-                href="#"
-                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              <button
+                onClick={() => handlePage(page)}
+                className={`${page===currentPage?'bg-gray-200 dark:bg-gray-700':'bg-white dark:bg-gray-800'} flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
               >
                 {page}
-              </a>
+              </button>
             </li>
           ))}
           <li>
-            <a
-              href="#"
+            <button
+              onClick={handleNext}
               className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               <span className="sr-only">Next</span>
@@ -78,15 +98,15 @@ function Pagination({ maxValue, currentPage, perPage = 10 }: PaginationProps) {
                   d="m1 9 4-4-4-4"
                 />
               </svg>
-            </a>
+            </button>
           </li>
         </ul>
       </div>
       <div aria-label="Page navigation example" className="hidden sm:block">
         <ul className="flex items-center -space-x-px h-10 text-base">
           <li>
-            <a
-              href="#"
+            <button
+              onClick={handlePrevious}
               className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               <span className="sr-only">Previous</span>
@@ -105,23 +125,23 @@ function Pagination({ maxValue, currentPage, perPage = 10 }: PaginationProps) {
                   d="M5 1 1 5l4 4"
                 />
               </svg>
-            </a>
+            </button>
           </li>
           {pages.map((page, index) => (
             <li key={index}>
-              <a
-                href="#"
-                className={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
-                  currentPage === page ? "z-10" : ""
+              <button
+                onClick={() => handlePage(page)}
+                className={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+                  currentPage === page ? "z-10 bg-gray-200 dark:bg-gray-700" : 'bg-white dark:bg-gray-800'
                 }`}
               >
                 {page}
-              </a>
+              </button>
             </li>
           ))}
           <li>
-            <a
-              href="#"
+            <button
+              onClick={handleNext}
               className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
             >
               <span className="sr-only">Next</span>
@@ -140,7 +160,7 @@ function Pagination({ maxValue, currentPage, perPage = 10 }: PaginationProps) {
                   d="m1 9 4-4-4-4"
                 />
               </svg>
-            </a>
+            </button>
           </li>
         </ul>
       </div>

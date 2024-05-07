@@ -70,7 +70,7 @@ function EditUrl({
   return (
     <>
       <div
-        className={`${!editUrl && "hidden"} absolute top-0 left-0 w-screen h-screen flex items-center justify-center z-20`}
+        className={`${!editUrl && "hidden"} fixed top-0 left-0 w-screen h-screen flex items-center justify-center z-20`}
         style={{
           backdropFilter: editUrl ? "blur(8px)" : "none", // Apply blur effect conditionally
           backgroundColor: editUrl ? "rgba(0, 0, 0, 0.5)" : "transparent", // Add a semi-transparent background

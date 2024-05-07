@@ -17,7 +17,12 @@ import paginate from "../middleware/paginator";
 router.get("/all", authMiddleWare, paginate, getAllLinks);
 router.post("/create", authMiddleWare, createLink);
 // a route that creates a short URL with or without login
-router.post("/create-without-login", createLinkWithoutLogin, authMiddleWare, createLink);
+router.post(
+  "/create-without-login",
+  createLinkWithoutLogin,
+  authMiddleWare,
+  createLink,
+);
 router.delete("/delete-all", authMiddleWare, deleteAllLinks);
 router.delete("/delete/:id", authMiddleWare, deleteLink);
 router.put("/edit/:id", authMiddleWare, editLink);

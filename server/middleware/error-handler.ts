@@ -97,8 +97,10 @@ const errorHandlerMiddleware = (
       msg: errorMessage,
     });
   }
-  if(err instanceof NotFoundError) {
-    return res.status(StatusCodes.NOT_FOUND).json({error: true, msg: err.message});
+  if (err instanceof NotFoundError) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ error: true, msg: err.message });
   }
 
   if (err instanceof SyntaxError && err.message.includes("JSON")) {
@@ -106,7 +108,6 @@ const errorHandlerMiddleware = (
       .status(StatusCodes.BAD_REQUEST)
       .json({ error: true, msg: "Invalid JSON in request body" });
   }
-
 
   console.log(err);
 

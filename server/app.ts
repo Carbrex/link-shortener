@@ -24,6 +24,7 @@ import urlRouter from "./routes/url";
 // // error handler
 import notFoundMiddleware from "./middleware/not-found";
 import errorHandlerMiddleware from "./middleware/error-handler";
+import path from "path";
 
 app.set("trust proxy", 1);
 
@@ -56,11 +57,9 @@ app.use(express.json());
 // app.use(cors());
 // app.use(xss());
 
-app.get("/", (req, res) => {
-  res.send("Hello");
-});
 
 // routes
+app.use("/", express.static(path.resolve(__dirname, "../client/build")));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/url", urlRouter);
 

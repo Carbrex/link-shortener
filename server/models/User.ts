@@ -46,7 +46,7 @@ const preSave = async function (this: any, next: (err?: Error) => void) {
   if (this.profilePicture === undefined) {
     this.profilePicture = `https://ui-avatars.com/api/?name=${this.name}`;
   }
-  
+
   if (!this.isModified("password")) {
     return next();
   }

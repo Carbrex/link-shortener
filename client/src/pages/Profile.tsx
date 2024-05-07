@@ -33,7 +33,7 @@ function Profile() {
   const dispatch = useAppDispatch();
 
   const profileUpdateHandler = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
     updateProfile(editProfileData).then((data: any) => {
@@ -44,7 +44,7 @@ function Profile() {
   };
 
   const uploadImage = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
     if (!image) {
@@ -69,7 +69,7 @@ function Profile() {
   };
 
   const passwordChangeHandler = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
     if (passwordChange.newPassword !== passwordChange.confirmPassword) {

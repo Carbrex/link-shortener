@@ -14,7 +14,7 @@ function Home() {
   const [shortenedUrl, setShortenedUrl] = React.useState("");
 
   const generateShortenedUrl = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
     if (!originalUrl) {
@@ -33,7 +33,7 @@ function Home() {
       {
         pending: "Shortening URL...",
         success: "URL shortened successfully",
-      }
+      },
     );
   };
 
@@ -136,10 +136,10 @@ function Home() {
                       onClick={() => {
                         navigator.clipboard.writeText(shortenedUrl);
                         const tooltip = document.getElementById(
-                          "default-icon-shorten-url"
+                          "default-icon-shorten-url",
                         );
                         const successIcon = document.getElementById(
-                          "success-icon-shorten-url"
+                          "success-icon-shorten-url",
                         );
                         toast.success("Copied to clipboard");
                         tooltip?.classList.add("hidden");

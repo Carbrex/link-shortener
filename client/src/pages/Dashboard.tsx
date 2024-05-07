@@ -32,7 +32,7 @@ function Dashboard() {
         perPage,
         sortField,
         sortOrder,
-        showExpired
+        showExpired,
       );
       if (showMessage) {
         toast.promise(dataPromise, {

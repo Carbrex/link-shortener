@@ -4,7 +4,7 @@ import { reportUrl } from "../api";
 
 function ReportLink() {
   const [reportedUrl, setReportedUrl] = React.useState(
-    `${window.location.origin + "/"}`
+    `${window.location.origin + "/"}`,
   );
   const [reason, setReason] = React.useState("");
 

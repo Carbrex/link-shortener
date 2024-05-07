@@ -18,7 +18,7 @@ function ShowUrl({
 }: ExtendedEditUrlProps) {
   const [withPassword, setWithPassword] = useState(false);
   const [shortenUrl, setShortenUrl] = useState(
-    window.location.origin + "/" + urlData.shortUrl
+    window.location.origin + "/" + urlData.shortUrl,
   );
 
   useEffect(() => {
@@ -121,10 +121,10 @@ function ShowUrl({
                           onClick={() => {
                             navigator.clipboard.writeText(shortenUrl);
                             const tooltip = document.getElementById(
-                              "default-icon-shorten-url"
+                              "default-icon-shorten-url",
                             );
                             const successIcon = document.getElementById(
-                              "success-icon-shorten-url"
+                              "success-icon-shorten-url",
                             );
                             toast.success("Copied to clipboard");
                             tooltip?.classList.add("hidden");

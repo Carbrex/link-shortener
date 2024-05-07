@@ -34,7 +34,7 @@ const login = async (req: Request, res: Response) => {
   if (!isPasswordCorrect) {
     throw new UnauthenticatedError("Invalid Credentials");
   }
-  
+
   const token = user.createJWT();
   res.status(StatusCodes.OK).json({
     name: user.name,
@@ -114,7 +114,7 @@ const passwordChange = async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json({
     msg: "Password changed successfully",
   });
-}
+};
 
 const uploadProfilePicture = async (req: Request, res: Response) => {
   const userId = req.user.userId;

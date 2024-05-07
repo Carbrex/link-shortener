@@ -20,6 +20,11 @@ router.put("/password", authMiddleWare, passwordChange);
 router.get("/", authMiddleWare, sendDetails);
 router.get("/profile", authMiddleWare, profile);
 router.put("/profile", authMiddleWare, updateProfile);
-router.put("/profile/picture", authMiddleWare, upload.single("profileImage"), uploadProfilePicture);
+router.put(
+  "/profile/picture",
+  authMiddleWare,
+  upload.single("profileImage"),
+  uploadProfilePicture,
+);
 
 export default router;

@@ -5,7 +5,7 @@ import {
   ProfileType,
   ShortenUrlType,
   SignInType,
-  SignUpType
+  SignUpType,
 } from "../types";
 import { logout } from "../store/userSlice";
 import store from "../store";
@@ -24,7 +24,7 @@ API.interceptors.request.use(
   },
   function (error) {
     return Promise.reject(error);
-  }
+  },
 );
 
 API.interceptors.response.use(
@@ -54,7 +54,7 @@ API.interceptors.response.use(
       toast.error("Network Error: Please try again later.");
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 /* Auth API */
@@ -84,10 +84,10 @@ export const getDashboard = (
   limit: number,
   sortField: string,
   sortOrder: string,
-  expired: Boolean
+  expired: Boolean,
 ) =>
   API.get(
-    `/url/all?page=${page}&limit=${limit}&sort=${sortField}&order=${sortOrder}&expired=${expired}`
+    `/url/all?page=${page}&limit=${limit}&sort=${sortField}&order=${sortOrder}&expired=${expired}`,
   );
 export const createShortUrl = (urlData: ShortenUrlType) =>
   API.post("/url/create", urlData);
@@ -98,5 +98,7 @@ export const deleteShortUrl = (id: string) => API.delete(`/url/delete/${id}`);
 /* URL API */
 export const shortenWithoutLogin = (originalUrl: string) =>
   API.post("/url/create-without-login", { originalUrl });
-export const redirectUrl = (shortUrl: string,password: string) => API.get(`/url/${shortUrl}?password=${password}`);
-export const reportUrl = (shortUrl: string, reason: string) => API.post(`/url/report/${shortUrl}`, { reason });
+export const redirectUrl = (shortUrl: string, password: string) =>
+  API.get(`/url/${shortUrl}?password=${password}`);
+export const reportUrl = (shortUrl: string, reason: string) =>
+  API.post(`/url/report/${shortUrl}`, { reason });

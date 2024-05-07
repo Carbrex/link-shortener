@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Pagination from "./Pagination";
-import ShortenUrl from "./ShortenUrl";
-import EditUrl from "./ShowAndEditUrl";
+import Pagination from "../component/Pagination";
+import ShortenUrl from "../component/ShortenUrl";
+import EditUrl from "../component/ShowAndEditUrl";
 import { getDashboard } from "../api";
-import Loading from "./Loading";
+import Loading from "../component/Loading";
 import { toast } from "react-toastify";
 import { UrlData } from "../types";
 

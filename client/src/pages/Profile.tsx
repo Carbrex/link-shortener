@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { changePassword, getProfile, updateProfile, uploadProfilePicture } from "../api";
-import Loading from "./Loading";
+import {
+  changePassword,
+  getProfile,
+  updateProfile,
+  uploadProfilePicture,
+} from "../api";
+import Loading from "../component/Loading";
 import { ProfileType } from "../types";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../hooks";
@@ -82,7 +87,7 @@ function Profile() {
         confirmPassword: "",
       });
     });
-  }
+  };
 
   useEffect(() => {
     getProfile().then((data: any) => {
@@ -96,7 +101,7 @@ function Profile() {
   return (
     <div className="w-full max-w-screen-xl flex gap-4 flex-col p-8">
       <div className="flex flex-col gap-8 md:flex-row md:gap-20">
-        <div>
+        <div className="md:w-60">
           <h1 className="text-2xl">Account Settings</h1>
           <p>Update your profile information</p>
         </div>
@@ -211,7 +216,7 @@ function Profile() {
         </div>
       </div>
       <div className="flex pt-4 flex-col md:flex-row md:gap-20">
-        <div>
+        <div className="md:w-60">
           <h1 className="text-2xl">Change Password</h1>
           <p>Change your account password</p>
         </div>

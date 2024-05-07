@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { redirectUrl } from "../api";
-import Loading from "./Loading";
+import Loading from "../component/Loading";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 

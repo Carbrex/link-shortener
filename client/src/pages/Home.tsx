@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../hooks";
-import QRCodeComponent from "./QRCode";
+import QRCodeComponent from "../component/QRCode";
 import { shortenWithoutLogin } from "../api";
 import { toast } from "react-toastify";
 

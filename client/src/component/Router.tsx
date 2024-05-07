@@ -6,14 +6,15 @@ import {
 } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useAppSelector } from "../hooks";
-import Dashboard from "./Dashboard";
-import Profile from "./Profile";
-import Signin from "./Signin";
-import Signup from "./Signup";
-import Home from "./Home";
+import Dashboard from "../pages/Dashboard";
+import Profile from "../pages/Profile";
+import Signin from "../pages/Signin";
+import Signup from "../pages/Signup";
+import Home from "../pages/Home";
 import Footer from "./Footer";
-import ErrorAndRedirect from "./ErrorAndRedirect";
-import ReportLink from "./ReportLink";
+import ErrorAndRedirect from "../pages/ErrorAndRedirect";
+import ReportLink from "../pages/ReportLink";
+import { toast } from "react-toastify";
 
 const Layout = () => {
   const location = useLocation();
@@ -44,7 +45,10 @@ const Layout = () => {
 const ProtectedRoute = () => {
   const { token } = useAppSelector((state) => state.user);
 
-  if (!token) return <Navigate to="/signin" />;
+  if (!token) {
+    toast.error("You need to be logged in to access this page");
+    return <Navigate to="/signin" />;
+  }
   return <Outlet />;
 };
 

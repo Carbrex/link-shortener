@@ -101,3 +101,4 @@ export const deleteShortUrl = (id: string) => API.delete(`/url/delete/${id}`);
 export const shortenWithoutLogin = (originalUrl: string) =>
   API.post("/url/create-without-login", { originalUrl });
 export const redirectUrl = (shortUrl: string,password: string) => API.get(`/url/${shortUrl}?password=${password}`);
+export const reportUrl = (shortUrl: string, reason: string) => API.post(`/url/report/${shortUrl}`, { reason });

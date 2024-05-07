@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { EditUrlProps } from "../types";
 import QRCodeComponent from "./QRCode";
@@ -16,7 +16,23 @@ function ShowUrl({
   setIsEditing,
   urlData,
 }: ExtendedEditUrlProps) {
-  if(!urlData) return null;
+  const [withPassword, setWithPassword] = useState(false);
+  const [shortenUrl, setShortenUrl] = useState(
+    window.location.origin + "/" + urlData.shortUrl
+  );
+
+  useEffect(() => {
+    if (urlData.password) {
+      const remaining = `?password=${urlData.password}`;
+      if (withPassword) {
+        setShortenUrl((prev) => prev + remaining);
+      } else {
+        setShortenUrl((prev) => prev.replace(remaining, ""));
+      }
+    }
+  }, [withPassword]);
+
+  if (!urlData) return null;
   return (
     <>
       <div
@@ -82,23 +98,97 @@ function ShowUrl({
                     />
                   </div>
                   <div className="col-span-4 sm:col-span-2">
-                    <label
-                      htmlFor="shortUrl"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Short URL (5-10 characters only - letters and numbers
-                      only)
-                    </label>
-                    <input
-                      type="string"
-                      name="shortUrl"
-                      id="shortUrl"
-                      className={`${!false ? "bg-gray-50 dark:bg-gray-600" : "bg-gray-200 dark:bg-gray-500 "} border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:placeholder-gray-400`}
-                      placeholder={"Enter short URL"}
-                      value={urlData.shortUrl}
-                      disabled
-                    />
+                    <div className="mt-3 mb-[-1.5rem]">
+                      <label
+                        htmlFor="short-url"
+                        className="text-sm text-left font-medium text-gray-900 dark:text-white mb-2 block"
+                      >
+                        Shortened URL:
+                      </label>
+                      <div className="relative mb-4">
+                        <input
+                          id="short-url"
+                          type="text"
+                          className={`${!false ? "bg-gray-50 dark:bg-gray-600" : "bg-gray-200 dark:bg-gray-500 "} border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:placeholder-gray-400`}
+                          value={shortenUrl}
+                          disabled
+                          readOnly
+                        />
+                        <button
+                          data-copy-to-clipboard-target="shorten-url"
+                          data-tooltip-target="tooltip-shorten-url"
+                          className="absolute end-2 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2 inline-flex items-center justify-center"
+                          onClick={() => {
+                            navigator.clipboard.writeText(shortenUrl);
+                            const tooltip = document.getElementById(
+                              "default-icon-shorten-url"
+                            );
+                            const successIcon = document.getElementById(
+                              "success-icon-shorten-url"
+                            );
+                            toast.success("Copied to clipboard");
+                            tooltip?.classList.add("hidden");
+                            successIcon?.classList.remove("hidden");
+                            setTimeout(() => {
+                              tooltip?.classList.remove("hidden");
+                              successIcon?.classList.add("hidden");
+                            }, 2000);
+                          }}
+                        >
+                          <span id="default-icon-shorten-url">
+                            <svg
+                              className="w-3.5 h-3.5"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox="0 0 18 20"
+                            >
+                              <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" />
+                            </svg>
+                          </span>
+                          <span
+                            id="success-icon-shorten-url"
+                            className="hidden inline-flex items-center"
+                          >
+                            <svg
+                              className="w-3.5 h-3.5 text-blue-700 dark:text-blue-500"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 16 12"
+                            >
+                              <path
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M1 5.917 5.724 10.5 15 1.5"
+                              />
+                            </svg>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
+                  {urlData.password && (
+                    <div className="col-span-4 sm:col-span-2">
+                      <div className="flex items-center">
+                        <input
+                          id="with-password"
+                          type="checkbox"
+                          className="rounded text-primary-600 focus:ring-primary-600 dark:focus:ring-primary-500"
+                          checked={withPassword}
+                          onChange={() => setWithPassword((prev) => !prev)}
+                        />
+                        <label
+                          htmlFor="with-password"
+                          className="ml-2 text-sm text-gray-900 dark:text-white"
+                        >
+                          Include Password in URL
+                        </label>
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <p>
                       <span className="inline mb-2 mr-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -138,8 +228,9 @@ function ShowUrl({
                       />
                     </div>
                   )}
-                  <QRCodeComponent link={urlData.shortUrl} />
+                  <QRCodeComponent link={shortenUrl} />
                 </div>
+
                 <div className="flex gap-2">
                   <button
                     className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-fit p-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -164,10 +255,12 @@ function ShowUrl({
                   </button>
                   <button
                     className="text-white inline-flex items-center bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-fit p-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                    onClick={() => deleteShortUrl(_id).then(()=>{
-                      loadDashboard();
-                      setIsEditing(false);
-                    })}
+                    onClick={() =>
+                      deleteShortUrl(_id).then(() => {
+                        loadDashboard();
+                        setIsEditing(false);
+                      })
+                    }
                   >
                     <svg
                       viewBox="0 0 24 24"

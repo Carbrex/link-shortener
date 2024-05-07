@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { CustomAPIError } from "../errors";
+import { CustomAPIError, NotFoundError } from "../errors";
 import mongoose from "mongoose";
 import { MongoServerError } from "mongodb";
 import { StatusCodes } from "http-status-codes";
@@ -10,6 +10,7 @@ import multer from "multer";
 const errorHandlerMiddleware = (
   err:
     | Error
+    | NotFoundError
     | CustomAPIError
     | jwt.JsonWebTokenError
     | mongoose.Error
@@ -96,12 +97,16 @@ const errorHandlerMiddleware = (
       msg: errorMessage,
     });
   }
+  if(err instanceof NotFoundError) {
+    return res.status(StatusCodes.NOT_FOUND).json({error: true, msg: err.message});
+  }
 
   if (err instanceof SyntaxError && err.message.includes("JSON")) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ error: true, msg: "Invalid JSON in request body" });
   }
+
 
   console.log(err);
 

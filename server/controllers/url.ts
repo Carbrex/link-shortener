@@ -286,6 +286,7 @@ const deleteAllLinks = async (req: Request, res: Response) => {
 
 const reportLink = async (req: Request, res: Response) => {
   const shortUrl = req.params.shortUrl;
+  const reason = req.body.reason;
   const url = await Url.findOne({ shortUrl });
   if (!url) {
     throw new NotFoundError(`No url with short url ${shortUrl}`);
@@ -300,7 +301,7 @@ const reportLink = async (req: Request, res: Response) => {
     from: process.env.SMTP_EMAIL_USER,
     to: process.env.MY_EMAIL,
     subject: "Short URL Reported",
-    text: `Hi, the short url ${shortUrl} has been reported by a user with email ${user.email}. Please check the url and take necessary actions.`,
+    text: `Hi, the short url ${shortUrl} has been reported by a user with email ${user.email}. Please check the url and take necessary actions. The reason for reporting is: \n${reason}`,
   });
   // Send confirmation email to the user
   sendMail({

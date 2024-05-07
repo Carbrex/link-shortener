@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import Logo from "../assets/lynk.png";
 import WebpLogo from "../assets/lynk.webp";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Navbar() {
   const { name, profilePicture } = useAppSelector((state) => state.user);

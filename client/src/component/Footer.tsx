@@ -1,8 +1,3 @@
-import React from "react";
-import Logo from "../assets/lynk.png";
-import WebpLogo from "../assets/lynk.webp";
-import { Link } from "react-router-dom";
-
 function Footer() {
   return (
     <>

@@ -9,7 +9,6 @@ import morgan from "morgan";
 import cors from "cors";
 import rateLimiter from "express-rate-limit";
 
-
 const app: Express = express();
 
 app.use(morgan("dev"));

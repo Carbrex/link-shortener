@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Pagination from "../component/Pagination";
 import ShortenUrl from "../component/ShortenUrl";
 import EditUrl from "../component/ShowAndEditUrl";
@@ -14,7 +14,7 @@ function Dashboard() {
   const [editItemId, setEditItemId] = useState<string | null>(null);
   const [loading, setLoading] = useState<Boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
+  const perPage = 10;
   const [maxValue, setMaxValue] = useState(0);
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");

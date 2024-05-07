@@ -3,11 +3,9 @@ import { toast } from "react-toastify";
 import {
   EditUrlData,
   ProfileType,
-  ShortenUrlData,
   ShortenUrlType,
   SignInType,
-  SignUpType,
-  UrlData,
+  SignUpType
 } from "../types";
 import { logout } from "../store/userSlice";
 import store from "../store";

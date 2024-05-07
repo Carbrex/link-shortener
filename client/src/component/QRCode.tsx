@@ -1,18 +1,18 @@
-import React, { useRef } from 'react';
-import QRCode from 'qrcode.react';
-import { toPng } from 'html-to-image';
+import { useRef } from "react";
+import QRCode from "qrcode.react";
+import { toPng } from "html-to-image";
 
 function QRCodeComponent({ link }: { link: string }) {
   const qrCodeRef = useRef(null);
 
   const downloadQRCode = async () => {
     if (!qrCodeRef.current) return;
-    
+
     const pngUrl = await toPng(qrCodeRef.current);
 
-    let a = document.createElement('a');
+    let a = document.createElement("a");
     a.href = pngUrl;
-    a.download = 'qr-code.png';
+    a.download = "qr-code.png";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -20,7 +20,7 @@ function QRCodeComponent({ link }: { link: string }) {
 
   return (
     <div className="flex items-center">
-      <div ref={qrCodeRef} className='bg-white p-1'>
+      <div ref={qrCodeRef} className="bg-white p-1">
         <QRCode value={link} size={100} />
       </div>
       <button

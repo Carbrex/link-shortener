@@ -1,20 +1,7 @@
-import { useEffect, useState } from "react";
-import {
-  Outlet,
-  RouterProvider,
-  ScrollRestoration,
-  createBrowserRouter,
-  useLocation,
-  Navigate,
-} from "react-router-dom";
+import { useEffect } from "react";
+import { RouterProvider } from "react-router-dom";
 import "./App.css";
-import Navbar from "./component/Navbar";
-import Signin from "./pages/Signin";
-import Signup from "./pages/Signup";
-import Sidebar from "./component/Sidebar";
-import Profile from "./pages/Profile";
-import Dashboard from "./pages/Dashboard";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import router from "./component/Router";
 import { useAppDispatch, useAppSelector } from "./hooks";

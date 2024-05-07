@@ -1,5 +1,3 @@
-import React from "react";
-
 function Loading() {
   return (
     // <div className="min-h-section flex items-center justify-center">

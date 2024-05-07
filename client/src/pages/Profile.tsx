@@ -79,7 +79,7 @@ function Profile() {
     changePassword({
       currentPassword: passwordChange.currentPassword,
       newPassword: passwordChange.newPassword,
-    }).then((data: any) => {
+    }).then(() => {
       toast.success("Password changed successfully");
       setPasswordChange({
         currentPassword: "",

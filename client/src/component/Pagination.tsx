@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 interface PaginationProps {
   maxValue: number;
@@ -7,7 +7,12 @@ interface PaginationProps {
   perPage?: number;
 }
 
-function Pagination({ maxValue, currentPage, setCurrentPage, perPage = 10 }: PaginationProps) {
+function Pagination({
+  maxValue,
+  currentPage,
+  setCurrentPage,
+  perPage = 10,
+}: PaginationProps) {
   const totalPages = Math.ceil(maxValue / perPage);
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   // keep only 5 pages in view
@@ -27,19 +32,19 @@ function Pagination({ maxValue, currentPage, setCurrentPage, perPage = 10 }: Pag
     if (currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
     }
-  }
+  };
   const handleNext = () => {
     console.log(currentPage);
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
     }
-  }
-  
+  };
+
   const handlePage = (page: number) => {
     console.log(currentPage);
     setCurrentPage(page);
-  }
-  
+  };
+
   return (
     <>
       <div aria-label="Page navigation example" className="sm:hidden">
@@ -71,7 +76,7 @@ function Pagination({ maxValue, currentPage, setCurrentPage, perPage = 10 }: Pag
             <li key={index}>
               <button
                 onClick={() => handlePage(page)}
-                className={`${page===currentPage?'bg-gray-200 dark:bg-gray-700':'bg-white dark:bg-gray-800'} flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
+                className={`${page === currentPage ? "bg-gray-200 dark:bg-gray-700" : "bg-white dark:bg-gray-800"} flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
               >
                 {page}
               </button>
@@ -132,7 +137,9 @@ function Pagination({ maxValue, currentPage, setCurrentPage, perPage = 10 }: Pag
               <button
                 onClick={() => handlePage(page)}
                 className={`flex items-center justify-center px-4 h-10 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
-                  currentPage === page ? "z-10 bg-gray-200 dark:bg-gray-700" : 'bg-white dark:bg-gray-800'
+                  currentPage === page
+                    ? "z-10 bg-gray-200 dark:bg-gray-700"
+                    : "bg-white dark:bg-gray-800"
                 }`}
               >
                 {page}

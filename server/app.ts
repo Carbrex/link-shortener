@@ -35,7 +35,7 @@ app.use(
   }),
 );
 
-const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
+const allowedOrigins = ["http://localhost:5173", "http://localhost:3000", "https://link-shortener-u3ol.onrender.com"];
 
 app.use(
   cors({

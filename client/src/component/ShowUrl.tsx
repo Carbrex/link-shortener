@@ -5,7 +5,7 @@ import QRCodeComponent from "./QRCode";
 import { deleteShortUrl } from "../api";
 
 interface ExtendedEditUrlProps extends EditUrlProps {
-  setIsEditing: React.Dispatch<React.SetStateAction<Boolean>>;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function ShowUrl({
@@ -58,7 +58,7 @@ function ShowUrl({
                   type="button"
                   className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                   data-modal-toggle="crud-modal"
-                  onClick={() => setEditUrl((prev: Boolean) => !prev)}
+                  onClick={() => setEditUrl((prev: boolean) => !prev)}
                 >
                   <svg
                     className="w-3 h-3"
@@ -109,7 +109,7 @@ function ShowUrl({
                         <input
                           id="short-url"
                           type="text"
-                          className={`${!false ? "bg-gray-50 dark:bg-gray-600" : "bg-gray-200 dark:bg-gray-500 "} border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:placeholder-gray-400`}
+                          className={`bg-gray-50 dark:bg-gray-600 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:placeholder-gray-400`}
                           value={shortenUrl}
                           disabled
                           readOnly
@@ -222,7 +222,7 @@ function ShowUrl({
                         type="text"
                         name="password"
                         id="password"
-                        className={`${true ? "bg-gray-50 dark:bg-gray-600" : "bg-gray-200 dark:bg-gray-500"} border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
+                        className={`bg-gray-50 dark:bg-gray-600 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
                         value={urlData.password}
                         disabled
                       />

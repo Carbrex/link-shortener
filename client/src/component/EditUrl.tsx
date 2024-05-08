@@ -4,7 +4,7 @@ import { editShortUrl } from "../api";
 import { EditUrlData, EditUrlProps } from "../types";
 
 interface ExtendedEditUrlProps extends EditUrlProps {
-  setIsEditing: React.Dispatch<React.SetStateAction<Boolean>>;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function EditUrl({
@@ -92,7 +92,7 @@ function EditUrl({
                   type="button"
                   className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                   data-modal-toggle="crud-modal"
-                  onClick={() => setEditUrl((prev: Boolean) => !prev)}
+                  onClick={() => setEditUrl((prev: boolean) => !prev)}
                 >
                   <svg
                     className="w-3 h-3"

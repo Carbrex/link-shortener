@@ -10,7 +10,7 @@ function QRCodeComponent({ link }: { link: string }) {
 
     const pngUrl = await toPng(qrCodeRef.current);
 
-    let a = document.createElement("a");
+    const a = document.createElement("a");
     a.href = pngUrl;
     a.download = "qr-code.png";
     document.body.appendChild(a);

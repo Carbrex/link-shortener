@@ -10,7 +10,7 @@ function ShowAndEdit({
   loadDashboard,
   urlData,
 }: EditUrlProps) {
-  const [isEditing, setIsEditing] = React.useState<Boolean>(false);
+  const [isEditing, setIsEditing] = React.useState<boolean>(false);
 
   if (isEditing) {
     return (

@@ -4,12 +4,12 @@ import { getDetails, login, register } from "../../api";
 import { toast } from "react-toastify";
 
 export interface LoginState {
-  loadingUser: Boolean;
+  loadingUser: boolean;
   token?: string;
-  isDarkMode: Boolean;
+  isDarkMode: boolean;
   name?: string;
   profilePicture?: string;
-  isAdministrator?: Boolean;
+  isAdministrator?: boolean;
 }
 
 const initialState: LoginState = {

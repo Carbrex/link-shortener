@@ -84,7 +84,7 @@ export const getDashboard = (
   limit: number,
   sortField: string,
   sortOrder: string,
-  expired: Boolean,
+  expired: boolean,
 ) =>
   API.get(
     `/url/all?page=${page}&limit=${limit}&sort=${sortField}&order=${sortOrder}&expired=${expired}`,

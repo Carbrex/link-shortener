@@ -1,7 +1,7 @@
 // import React, { useState } from "react";
 
 // function Sidebar() {
-//   const [isOpen, setIsOpen] = useState<Boolean>(false);
+//   const [isOpen, setIsOpen] = useState<boolean>(false);
 
 //   return (
 //     <aside

@@ -18,10 +18,10 @@ export interface ProfileType {
 export interface ShortenUrlData {
   originalUrl: string;
   expirationDate: Date;
-  hasExpirationDate: Boolean;
+  hasExpirationDate: boolean;
   shortUrl: string;
-  autoShorten: Boolean;
-  hasPassword: Boolean;
+  autoShorten: boolean;
+  hasPassword: boolean;
   password: string;
 }
 
@@ -29,7 +29,7 @@ export interface UrlData {
   _id: string;
   originalUrl: string;
   shortUrl: string;
-  hasExpirationDate: Boolean;
+  hasExpirationDate: boolean;
   expirationDate: Date;
   createdAt: string;
   clickCount: number;
@@ -37,23 +37,23 @@ export interface UrlData {
 }
 
 export interface EditUrlData extends UrlData {
-  hasPassword: Boolean;
+  hasPassword: boolean;
 }
 
 export interface EditUrlProps {
   _id: string;
   urlData: UrlData;
-  editUrl: Boolean;
-  setEditUrl: React.Dispatch<React.SetStateAction<Boolean>>;
+  editUrl: boolean;
+  setEditUrl: React.Dispatch<React.SetStateAction<boolean>>;
   loadDashboard: (showMessage?: boolean) => Promise<void>;
 }
 
 export interface ShortenUrlType {
   originalUrl: string;
   expirationDate: Date;
-  hasExpirationDate: Boolean;
+  hasExpirationDate: boolean;
   shortUrl: string;
-  autoShorten: Boolean;
-  hasPassword: Boolean;
+  autoShorten: boolean;
+  hasPassword: boolean;
   password: string;
 }

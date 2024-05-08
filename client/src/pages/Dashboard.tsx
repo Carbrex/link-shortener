@@ -9,17 +9,17 @@ import { UrlData } from "../types";
 
 function Dashboard() {
   const [tableData, setTableData] = useState<UrlData[]>([] as UrlData[]);
-  const [showShortenUrl, setShowShortenUrl] = useState<Boolean>(false);
-  const [editUrl, setEditUrl] = useState<Boolean>(false);
+  const [showShortenUrl, setShowShortenUrl] = useState<boolean>(false);
+  const [editUrl, setEditUrl] = useState<boolean>(false);
   const [editItemId, setEditItemId] = useState<string | null>(null);
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 10;
   const [maxValue, setMaxValue] = useState(0);
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
-  const [firstLoad, setFirstLoad] = useState<Boolean>(true);
-  const [showExpired, setShowExpired] = useState<Boolean>(false);
+  const [firstLoad, setFirstLoad] = useState<boolean>(true);
+  const [showExpired, setShowExpired] = useState<boolean>(false);
 
   const loadDashboard = async (showMessage: boolean = false): Promise<void> => {
     if (firstLoad) {
@@ -79,7 +79,7 @@ function Dashboard() {
         <h1 className="text-2xl font-bold underline mb-5">Your URLs</h1>
         <button
           type="submit"
-          onClick={() => setShowShortenUrl((prev: Boolean) => !prev)}
+          onClick={() => setShowShortenUrl((prev: boolean) => !prev)}
           className="sm:mr-4 h-fit w-fit text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex gap-4"
         >
           Shorten a url
@@ -107,7 +107,7 @@ function Dashboard() {
             className="form-checkbox"
             checked={showExpired as boolean}
             onChange={() => {
-              setShowExpired((prev: Boolean) => !prev);
+              setShowExpired((prev: boolean) => !prev);
               setCurrentPage(1);
             }}
           />
@@ -236,7 +236,7 @@ function Dashboard() {
                     <p
                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                       onClick={() => {
-                        setEditUrl((prev: Boolean) => !prev);
+                        setEditUrl((prev: boolean) => !prev);
                         setEditItemId(data._id);
                       }}
                     >

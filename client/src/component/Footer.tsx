@@ -14,7 +14,7 @@ function Footer() {
             </span>
             <div className="flex justify-center mt-0">
               <a
-                href="https://github.com/Carbrex"
+                href="https://github.com/Carbrex/lynk"
                 target="_blank"
                 className="text-gray-500 hover:text-gray-900 dark:hover:text-white ms-5"
               >

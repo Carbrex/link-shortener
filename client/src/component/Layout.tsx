@@ -1,8 +1,4 @@
-import {
-  Outlet,
-  useLocation,
-  Navigate,
-} from "react-router-dom";
+import { Outlet, useLocation, Navigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useAppSelector } from "../hooks";
 import Footer from "./Footer";
@@ -38,7 +34,9 @@ const ProtectedRoute = () => {
   const { token } = useAppSelector((state) => state.user);
 
   if (!token) {
-    toast.error("You need to be logged in to access this page");
+    toast.error("You need to be logged in to access this page", {
+      toastId: "protected-route",
+    });
     return <Navigate to="/signin" />;
   }
   return <Outlet />;
@@ -52,4 +50,4 @@ const AntiProtectedRoute = () => {
   return <Outlet />;
 };
 
-export {Layout, ProtectedRoute, AntiProtectedRoute}
+export { Layout, ProtectedRoute, AntiProtectedRoute };

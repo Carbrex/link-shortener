@@ -25,9 +25,6 @@ function ReportLink() {
         setReportedUrl(`${window.location.origin + "/"}`);
         setReason("");
       })
-      .catch((err: any) => {
-        toast.error(err.msg);
-      });
   };
 
   const handleReportedUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -28,7 +28,7 @@ function ErrorAndRedirect() {
       .then((data: any) => {
         console.log(data);
         if (data.needPassword) {
-          toast.error(data.msg);
+          toast.error(data.msg,{toastId: "incorrect-password-redirect"});
           setLoading(false);
           setNeedPassword(true);
         } else if (data.originalUrl) window.location.href = data.originalUrl;

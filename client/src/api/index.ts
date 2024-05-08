@@ -10,7 +10,8 @@ import {
 import { logout } from "../store/userSlice";
 import store from "../store";
 
-const URL = import.meta.env.PROD ? "/api/v1" : "http://localhost:3000/api/v1";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const URL = `${BASE_URL ? BASE_URL : ""}/api/v1`;
 
 const API = axios.create({ baseURL: URL });
 

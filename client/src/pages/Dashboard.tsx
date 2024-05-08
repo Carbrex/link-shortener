@@ -32,7 +32,7 @@ function Dashboard() {
         perPage,
         sortField,
         sortOrder,
-        showExpired,
+        showExpired
       );
       if (showMessage) {
         toast.promise(dataPromise, {
@@ -191,7 +191,9 @@ function Dashboard() {
                 <tr className="h-12">
                   <td></td>
                   <td></td>
-                  <Loading />
+                  <td>
+                    <Loading />
+                  </td>
                 </tr>
               </>
             ) : (
@@ -210,7 +212,7 @@ function Dashboard() {
                       className="text-xs text-gray-500 dark:text-gray-400"
                       target="_blank"
                     >
-                      {`${window.location.hostname}/${data.shortUrl}`}
+                      {`${window.location.origin}/${data.shortUrl}`}
                     </a>
                   </th>
                   <td className="px-6 py-4 hidden sm:table-cell">

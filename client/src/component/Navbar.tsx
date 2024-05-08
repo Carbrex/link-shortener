@@ -119,7 +119,7 @@ function Navbar() {
                   xmlns="http://www.w3.org/2000/svg"
                   className="w-4 h-4 mt-[0.1rem]"
                   viewBox="0 0 52 52"
-                  enable-background="new 0 0 52 52"
+                  enableBackground="new 0 0 52 52"
                 >
                   <g>
                     <path

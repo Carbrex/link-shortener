@@ -7,9 +7,11 @@ const UrlSchema = new mongoose.Schema<IUrl>(
       type: String,
       required: [true, "Please provide original url"],
       minlength: [5, "Original url must be at least 5 characters"],
-      maxlength: [500, "Original url must be at most 500 characters"],
-      // should have at least one dot (.) in the URL
-      match: [/\./, "Please provide a valid URL to shorten"],
+      maxlength: [1000, "Original url must be at most 500 characters"],
+      match: [
+        /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/,
+        "Please provide a valid URL to shorten",
+      ],// matches that the url starts with http or https or ftp and has no spaces
     },
     shortUrl: {
       type: String,

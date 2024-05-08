@@ -21,6 +21,8 @@ const convertToObjectId = (id: string) => {
 };
 
 const getAllLinks = async (req: Request, res: Response) => {
+  // wait 2 sec
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   const validSortFields = [
     "originalUrl",
     "shortUrl",
@@ -170,7 +172,7 @@ const createLink = async (req: Request, res: Response) => {
   } catch (error) {
     throw new BadRequestError("Please provide a valid URL to shorten");
   }
-
+  
   let expiration: Date;
   if (hasExpiration) {
     expiration = new Date(expirationDate);

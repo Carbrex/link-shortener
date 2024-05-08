@@ -168,7 +168,7 @@ function EditUrl({
                           hasExpirationDate: e.target.checked,
                         }));
                       }}
-                      checked={shortenUrlData.hasExpirationDate as boolean}
+                      checked={shortenUrlData.hasExpirationDate}
                     />
                   </div>
                   {shortenUrlData.hasExpirationDate && (
@@ -226,7 +226,7 @@ function EditUrl({
                           hasPassword: e.target.checked,
                         }));
                       }}
-                      checked={shortenUrlData.hasPassword as boolean}
+                      checked={shortenUrlData.hasPassword}
                     />
                   </div>
 

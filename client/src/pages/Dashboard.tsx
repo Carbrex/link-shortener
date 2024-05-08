@@ -105,7 +105,7 @@ function Dashboard() {
           <input
             type="checkbox"
             className="form-checkbox"
-            checked={showExpired as boolean}
+            checked={showExpired}
             onChange={() => {
               setShowExpired((prev: boolean) => !prev);
               setCurrentPage(1);

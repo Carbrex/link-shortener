@@ -1,6 +1,4 @@
 # Lynk - Link Shortener
-
-## Description
 [Lynk](https://lynk-cx.onrender.com/) is a simple link shortener application that allows you to shorten long URLs into shorter links and QR codes. It also provides click statistics for shortened links, allowing you to track the number of clicks on each link. Lynk is built with Node.js, Express, and MongoDB. 
 
 ## Features

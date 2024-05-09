@@ -13,8 +13,8 @@ Install node.js and pnpm if you haven't already. Then follow the steps below to 
 2. Install dependencies: `pnpm install`
 3. Add environment variable to .env in server and client folders:
 ```
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+cp server/.env.example server/.env
+cp client/.env.example client/.env
 ```
 4. Start the server: `cd server && pnpm run dev`
 
@@ -23,8 +23,8 @@ Alternatively, you can run Lynk using Docker. Follow the steps below to build an
 1. Clone the repository: `git clone https://github.com/Carbrex/lynk.git`
 2. Add environment variable to .env in server and client folders:
 ```
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+cp server/.env.example server/.env
+cp client/.env.example client/.env
 ```
 3. Build the Docker image: `docker build -t lynk .`
 4. Run the Docker container: `docker run -d -p 3000:3000 lynk`

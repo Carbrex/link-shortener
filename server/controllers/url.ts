@@ -21,8 +21,6 @@ const convertToObjectId = (id: string) => {
 };
 
 const getAllLinks = async (req: Request, res: Response) => {
-  // wait 2 sec
-  await new Promise((resolve) => setTimeout(resolve, 2000));
   const validSortFields = [
     "originalUrl",
     "shortUrl",
@@ -73,7 +71,7 @@ const getAllLinks = async (req: Request, res: Response) => {
     .skip(req.pagination.skip)
     .limit(req.pagination.limit);
   const totalCount = await Url.countDocuments(query);
-  res
+  return res
     .status(StatusCodes.OK)
     .json({ count: totalCount, links, msg: "Links successfully fetched" });
 };
@@ -106,7 +104,7 @@ const editLink = async (req: Request, res: Response) => {
   if (!link) {
     throw new NotFoundError(`No link with id ${linkId}`);
   }
-  res.status(StatusCodes.OK).json({ link, msg: "Link successfully updated" });
+  return res.status(StatusCodes.OK).json({ link, msg: "Link successfully updated" });
 };
 
 const redirectUrl = async (req: Request, res: Response) => {
@@ -140,7 +138,7 @@ const redirectUrl = async (req: Request, res: Response) => {
     url.clickCount++;
   }
   await url.save();
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     originalUrl: url.originalUrl,
     needPassword: false,
     msg: "Redirecting to original url",
@@ -214,7 +212,7 @@ const createLink = async (req: Request, res: Response) => {
 
   const url = await Url.create(urlData);
 
-  res
+  return res
     .status(StatusCodes.CREATED)
     .json({ url, msg: "Link successfully created" });
 };
@@ -228,6 +226,7 @@ const createLinkWithoutLogin = async (
   const token = req.headers.authorization?.split(" ")[1];
   if (token) {
     next();
+    return;
   }
   let originalUrl: string = req.body.originalUrl;
   if (!originalUrl) {
@@ -260,7 +259,7 @@ const createLinkWithoutLogin = async (
   };
 
   const url = await Url.create(urlData);
-  res
+  return res
     .status(StatusCodes.CREATED)
     .json({ url, msg: "Link successfully created" });
 };
@@ -275,13 +274,13 @@ const deleteLink = async (req: Request, res: Response) => {
   if (!link) {
     throw new NotFoundError(`No link with id ${linkId}`);
   }
-  res.status(StatusCodes.OK).json({ link, msg: "Link successfully deleted" });
+  return res.status(StatusCodes.OK).json({ link, msg: "Link successfully deleted" });
 };
 
 const deleteAllLinks = async (req: Request, res: Response) => {
   const userId = req.user.userId;
   const links = await Url.deleteMany({ createdBy: userId });
-  res
+  return res
     .status(StatusCodes.OK)
     .json({ count: links.deletedCount, msg: "Links successfully deleted" });
 };

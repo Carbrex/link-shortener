@@ -11,7 +11,7 @@ const register = async (req: Request, res: Response) => {
   }
   const user: IUser = await User.create({ ...req.body });
   const token = user.createJWT();
-  res.status(StatusCodes.CREATED).json({
+  return res.status(StatusCodes.CREATED).json({
     name: user.name,
     isAdministrator: user.isAdministrator ?? false,
     profilePicture: user.profilePicture,
@@ -36,7 +36,7 @@ const login = async (req: Request, res: Response) => {
   }
 
   const token = user.createJWT();
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     name: user.name,
     isAdministrator: user.isAdministrator ?? false,
     profilePicture: user.profilePicture,
@@ -54,7 +54,7 @@ const sendDetails = async (req: Request, res: Response) => {
     throw new UnauthenticatedError("Unauthorized");
   }
   const token = user.createJWT();
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     name: user.name,
     isAdministrator: user.isAdministrator ?? false,
     profilePicture: user.profilePicture,
@@ -72,7 +72,7 @@ const profile = async (req: Request, res: Response) => {
   if (!user) {
     throw new UnauthenticatedError("Unauthorized");
   }
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     user,
     msg: "User details sent",
   });
@@ -88,7 +88,7 @@ const updateProfile = async (req: Request, res: Response) => {
   user.name = name;
   await user.save();
   const { email, profilePicture: pp } = user;
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     user: { email, name, profilePicture: pp },
     msg: "Profile updated successfully",
   });
@@ -100,18 +100,14 @@ const passwordChange = async (req: Request, res: Response) => {
   if (!user) {
     throw new UnauthenticatedError("Unauthorized");
   }
-  console.log(req.body, user);
   const { currentPassword, newPassword } = req.body;
   const isPasswordCorrect = await user.comparePassword(currentPassword);
   if (!isPasswordCorrect) {
     throw new BadRequestError("Invalid current password");
   }
-  console.log("Password is correct");
   user.password = newPassword;
-  console.log("Password is saved");
   await user.save();
-  console.log("Password is saved2");
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     msg: "Password changed successfully",
   });
 };
@@ -126,7 +122,7 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
   user.profilePicture = cloudinary_url;
   await user.save();
   const { email, name, profilePicture } = user;
-  res.status(StatusCodes.OK).json({
+  return res.status(StatusCodes.OK).json({
     user: { email, name, profilePicture },
     msg: "Profile picture uploaded successfully",
   });

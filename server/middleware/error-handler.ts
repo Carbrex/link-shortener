@@ -7,6 +7,10 @@ import jwt from "jsonwebtoken";
 import sendMail from "../utils/sendMail";
 import multer from "multer";
 
+function isMongoError(error: any): error is MongoServerError {
+  return error.name === 'MongoServerError';
+}
+
 const errorHandlerMiddleware = (
   err:
     | Error
@@ -61,7 +65,7 @@ const errorHandlerMiddleware = (
   if (err instanceof mongoose.Error) {
     console.log("mongoose error");
   }
-  if (err instanceof MongoServerError) {
+  if (isMongoError(err)) {
     if (err.code === 11000) {
       const key = Object.keys(err.keyValue)[0];
       const knownErrorKeys: { [key: string]: string } = {

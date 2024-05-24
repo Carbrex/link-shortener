@@ -42,8 +42,10 @@ function Dashboard() {
         });
       }
       const data: any = await dataPromise;
-      setTableData(data.links);
-      setMaxValue(data.count);
+      if (data.links) {
+        setTableData(data.links);
+        setMaxValue(data.count);
+      }
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
